@@ -1,0 +1,41 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>Lights Out</title>
+</head>
+<script>
+function start()
+{
+	var b=[]; for (var i=0;i<12;i++) b.push(Math.round(Math.random()));
+	var a=b.concat([Math.round(Math.random())]); b.reverse(); a=a.concat(b);
+	for (var i=0;i<25;i++) document.getElementById('Button'+i).style.backgroundColor= (a[i]==1 ? 'rgb(255, 255, 65)':'rgb(232, 132, 192)');
+}
+
+function set(x)
+{
+	var u=document.getElementById('Button'+x);
+	if (u.style.backgroundColor=='rgb(255, 255, 65)') u.style.backgroundColor='rgb(232, 132, 192)'; else u.style.backgroundColor='rgb(255, 255, 65)';
+}
+
+function init_board()
+{   
+	for (var i=0;i<25;i++)(function(x)
+	{
+		var btn = document.createElement('input'); btn.type = 'submit'; btn.id='Button'+x; btn.value="";
+		btn.style.cssText="position:absolute;left:"+(441+102*(x%5))+"px;top:"+(28+102*(parseInt(x/5)))+"px;width:100px;height:100px;z-index:"+x+";border: 1px #A9A9A9 solid;";
+		btn.onclick=function()
+		{
+			set(x); if (x>4) set(x-5); if (x<20) set(x+5); if (x%5 != 0) set(x-1); if (x%5 != 4) set(x+1);
+			var p1=true, p2=true;
+			for (var j=0;j<25;j++) if (document.getElementById('Button'+j).style.backgroundColor =='rgb(255, 255, 65)') p1=false; else p2=false;
+			if (p1||p2) {alert("You win!"); start();}
+		};
+		document.body.appendChild(btn);
+	})(i);
+	start();
+}
+</script>
+<body onload="init_board()">
+<input type="submit" id="new_game_button" style="border: 2px #0000FF solid; -moz-border-radius: 2px; -webkit-border-radius: 2px; border-radius: 2px; background-color: #4169E1; color: #FFFFFF; font-family: 'Comic Sans MS'; font-size: 27px; position: absolute; left: 575px; top: 569px; width: 250px; height: 50px; z-index: 25;" value="New Game" onclick="start()">
+</body>
+</html>
