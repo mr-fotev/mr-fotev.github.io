@@ -1,6 +1,6 @@
 # Mandelbrot Set 
 
-Combining different implementation techniques... not my own implementation by the way!
+Combining different implementation techniques... it's not my own implementation!
 
 Click on the canvas too zoom in the selected area.
 
