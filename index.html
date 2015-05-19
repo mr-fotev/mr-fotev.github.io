@@ -92,8 +92,8 @@ window.onload = function()
     rowData = ctx.createImageData(canvas.width, 1);
 
 // на следващите 2 реда нямам никаква представа какво се случва..... това са готините цветове	
-    function wrap(x) { x = ((x + 256) & 0x1ff) - 256; return (x<0 ? -x:x); }
-	for (i = 0; i <= this.max_iter; i++) palette.push([wrap(5*i), wrap(7*i), wrap(11*i)]);
+    function magic(x) { x = ((x + 256) & 0x1ff) - 256; return (x<0 ? -x:x); }
+    for (i = 0; i <=max_iter; i++) palette.push([magic(5*i), magic(7*i), magic(11*i)]);
 
 	
     canvas.onclick = function(event) {zoom(event.clientX-180,event.clientY,8);};
