@@ -1,63 +1,133 @@
 <html>
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<title>Lights Out</title>
-<link rel="shortcut icon" href="icon.ico">
+<title>Mandelbrot</title>
 </head>
 <script>
-function start(s)
-{
- // produce a solvable board
-	var b = [];
-	for (var i = 0; i < parseInt((s*s)/2); i++) b.push(Math.round(Math.random()));
-	var a = (s % 2 == 0 ? b.concat([]):b.concat([Math.round(Math.random())]));
-	b.reverse();
-	
-	a = a.concat(b);
-	for (var i = 0; i < s*s; i++) document.getElementById('Button'+i).style.backgroundColor = (a[i] == 1 ? 'rgb(255, 255, 65)':'rgb(232, 132, 192)');
-}
+var canvas;
+var ctx;
+ 
+var maxY = 1.5, minY = -1.5, minX = -2.5, maxX = 2;
+var max_iter = 1024, escape = 100;
+var palette = [];
 
-function set(x)
-{
- // switch the color of a button
-	var u = document.getElementById('Button'+x);
-	u.style.backgroundColor = (u.style.backgroundColor == 'rgb(255, 255, 65)' ? 'rgb(232, 132, 192)':'rgb(255, 255, 65)');
-}
+var numWorkers = 8;
+var workers = [];
+var rowData, nextRow = 0, gen = 0;
 
-function init_board(s)
-{   
- // delete the current board
-	var b = document.getElementById('board');
-	if (b != null) document.body.removeChild(b);
-	
- // create a new board
-	var board = document.createElement('div');
-	board.id = 'board';
-	document.body.appendChild(board);
-	
-	var sz = parseInt(525/s)-2;
-	
-	for (var i = 0; i < s*s; i++)(function(x)
+function createTask(row) 
+{
+    var task = 
 	{
-	  // create a button on the board
-		var btn = document.createElement('input'); btn.type = 'submit'; btn.id = 'Button' + x;	btn.value = '';
-		btn.style.cssText = 'position:absolute;left:' + (441 + sz*(x%s)) + 'px;top:' + (28 + sz*(parseInt(x/s))) + 'px;width:' + (sz-2) + 'px;height:' + (sz-2) + 'px;border: 1px #A9A9A9 solid;';
-		btn.onclick=function()
-		{
-			set(x); if (x>s-1) set(x-s); if (x<s*s-s) set(x+s); if (x%s != 0) set(x-1); if (x%s != s-1) set(x+1);
-			var p1=true, p2=true;
-			for (var j = 0; j < s*s; j++) if (document.getElementById('Button'+j).style.backgroundColor =='rgb(255, 255, 65)') p1 = false; else p2 = false;
-			if (p1 || p2) {alert('You win!'); start(s);}
-		};
-		document.getElementById('board').appendChild(btn);
-	})(i);
-	
-	start(s);
+        row: row, width: rowData.width, gen: gen, minX: minX, maxX: maxX,
+        i: maxY + (minY - maxY) * row / canvas.height, max_iter: max_iter, escape: escape
+    };
+    return task;
 }
+
+function drawRow(workerResults) 
+{
+    var values = workerResults.values;
+    var pixelData = rowData.data;
+    
+	for (var i = 0; i < rowData.width; i++) 
+	{
+        if (values[i] < 0) pixelData[4*i] = pixelData[4*i+1] = pixelData[4*i+2] = 0;
+		else 
+		{
+            var color = this.palette[values[i]];
+            pixelData[4*i] = color[0];
+            pixelData[4*i+1] = color[1];
+            pixelData[4*i+2] = color[2];
+        }
+		
+		pixelData[4*i+3] = 255;
+    }
+	
+    ctx.putImageData(this.rowData, 0, workerResults.row);
+}
+ 
+window.onload = function()
+{
+    canvas = document.getElementById("fractal");
+    ctx = canvas.getContext("2d");
+ 
+    var width = ((maxY - minY) * canvas.width / canvas.height);
+    var r_mid = (maxX + minX) / 2;
+    minX = r_mid - width/2;
+    maxX = r_mid + width/2;
+ 
+    rowData = ctx.createImageData(canvas.width, 1);
+
+// на следващите 2 реда нямам представа какво точно се случва..... това са готините цветове	
+    function wrap(x) { x = ((x + 256) & 0x1ff) - 256; return (x<0 ? -x:x); }
+	for (i = 0; i <= this.max_iter; i++) palette.push([wrap(5*i), wrap(7*i), wrap(11*i)]);
+
+	
+    canvas.onclick = function(event) {zoom(event.clientX-180,event.clientY,8);};
+ 
+    for (var i = 0; i < numWorkers; i++) 
+	{
+        var worker = new Worker("worker.js");
+ 
+        worker.onmessage = function(event) 
+		{
+			var worker=event.target, workerResults=event.data;
+			
+			if (workerResults.gen == gen) drawRow(workerResults);
+    
+			var row = nextRow++;
+			if (row >= canvas.height) worker.idle = true;
+			else 
+			{
+				var task = createTask(row);
+				worker.idle = false;
+				worker.postMessage(task);
+			}
+        }
+ 
+        worker.idle = true;
+        workers.push(worker);
+    }
+ 
+    startWorkers();
+}
+
+function startWorkers() 
+{
+    gen++;
+    nextRow = 0;
+    for (var i = 0; i < workers.length; i++) 
+	{
+        var worker = workers[i];
+        if (worker.idle) 
+		{
+            var task = createTask(nextRow);
+            worker.idle = false;
+            worker.postMessage(task);
+            nextRow++;
+        }
+    }
+}
+
+function zoom(x, y, zm)
+{
+	var width = maxX - minX;
+	var height = minY - maxY;
+	var click_r = minX + ((width * x) / canvas.width);
+	var click_i = maxY + ((height * y) / canvas.height);
+ 
+	minX = click_r - width/zm;
+	maxX = click_r + width/zm;
+	maxY = click_i - height/zm;
+	minY = click_i + height/zm;
+ 
+	startWorkers();
+}
+
 </script>
-<body onload="init_board(5)">
-<input type="submit" id="new_game_5" style="border: 0px #0000FF solid;  background-color: #4169E1; color: #FFFFFF; font-family: 'Comic Sans MS'; font-size: 27px; position: absolute; left: 275px; top: 570px; width: 250px; height: 50px;" value="New Game 5x5" onclick="init_board(5)">
-<input type="submit" id="new_game_6" style="border: 0px #0000FF solid;  background-color: #4169E1; color: #FFFFFF; font-family: 'Comic Sans MS'; font-size: 27px; position: absolute; left: 575px; top: 570px; width: 250px; height: 50px;" value="New Game 6x6" onclick="init_board(6)">
-<input type="submit" id="new_game_7" style="border: 0px #0000FF solid;  background-color: #4169E1; color: #FFFFFF; font-family: 'Comic Sans MS'; font-size: 27px; position: absolute; left: 875px; top: 570px; width: 250px; height: 50px;" value="New Game 7x7" onclick="init_board(7)">
+<body>
+<canvas id="fractal" style="position:absolute; left:180px;" width="1000" height="560"></canvas>
+<input type="submit" style="position:absolute; top:600px; left:500px; width:100px;" value="zoom Out" onclick="zoom(500,250,0.5)">
+<input type="submit" style="position:absolute; top:600px; left:700px; width:100px;" value="zoom In" onclick="zoom(500,250,8)">
 </body>
 </html>
