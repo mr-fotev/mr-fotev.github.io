@@ -1,7 +1,5 @@
 <html>
-<head>
 <title>Mandelbrot</title>
-</head>
 <script>
 var canvas;
 var ctx;
@@ -17,7 +15,7 @@ var rowData, nextRow = 0;
 function createTask(row) 
 {
     var task = 
-	{
+    {
         row: row, width: rowData.width, minX: minX, maxX: maxX,
         i: maxY + (minY - maxY) * row / canvas.height, max_iter: max_iter, escape: escape
     };
@@ -29,18 +27,18 @@ function drawRow(workerResults)
     var values = workerResults.values;
     var pixelData = rowData.data;
     
-	for (var i = 0; i < rowData.width; i++) 
-	{
+    for (var i = 0; i < rowData.width; i++) 
+    {
         if (values[i] < 0) pixelData[4*i] = pixelData[4*i+1] = pixelData[4*i+2] = 0;
-		else 
-		{
+	else 
+	{
             var color = this.palette[values[i]];
             pixelData[4*i] = color[0];
             pixelData[4*i+1] = color[1];
             pixelData[4*i+2] = color[2];
         }
 		
-		pixelData[4*i+3] = 255;
+	pixelData[4*i+3] = 255;
     }
 	
     ctx.putImageData(this.rowData, 0, workerResults.row);
@@ -50,10 +48,10 @@ function startWorkers()
 {
     nextRow = 0;
     for (var i = 0; i < numWorkers; i++) 
-	{
+    {
         var worker = workers[i];
         if (worker.idle) 
-		{
+	{
             var task = createTask(nextRow);
             worker.idle = false;
             worker.postMessage(task);
@@ -95,7 +93,6 @@ window.onload = function()
     function magic(x) { x = ((x + 256) & 0x1ff) - 256; return (x<0 ? -x:x); }
     for (i = 0; i <= max_iter; i++) palette.push([magic(5*i), magic(7*i), magic(11*i)]);
 
-	
     canvas.onclick = function(event) {zoom(event.clientX-180,event.clientY,8);};
  
     for (var i = 0; i < numWorkers; i++) 
@@ -126,7 +123,6 @@ window.onload = function()
 	
     startWorkers();
 }
-
 </script>
 <body>
 <canvas id="fractal" style="position:absolute; left:180px;" width="1000" height="560"></canvas>
