@@ -49,7 +49,7 @@ function drawRow(workerResults)
 function startWorkers() 
 {
     nextRow = 0;
-    for (var i = 0; i < workers.length; i++) 
+    for (var i = 0; i < numWorkers; i++) 
 	{
         var worker = workers[i];
         if (worker.idle) 
@@ -66,16 +66,18 @@ function zoom(x, y, zm)
 {
 	var width = maxX - minX;
 	var height = minY - maxY;
-	var click_r = minX + ((width * x) / canvas.width);
-	var click_i = maxY + ((height * y) / canvas.height);
+	var centerX = minX + ((width * x) / canvas.width);
+	var centerY = maxY + ((height * y) / canvas.height);
  
-	minX = click_r - width/zm;
-	maxX = click_r + width/zm;
-	maxY = click_i - height/zm;
-	minY = click_i + height/zm;
+	minX = centerX - width/zm;
+	maxX = centerX + width/zm;
+	maxY = centerY - height/zm;
+	minY = centerY + height/zm;
  
 	startWorkers();
 }
+
+function changeNum(){ numWorkers=parseInt(document.getElementById("Combobox1").value);}
 
 window.onload = function()
 {
@@ -120,13 +122,26 @@ window.onload = function()
         workers.push(worker);
     }
  
+	document.getElementById("Combobox1").value="8";
+	
     startWorkers();
 }
 
 </script>
 <body>
 <canvas id="fractal" style="position:absolute; left:180px;" width="1000" height="560"></canvas>
-<input type="submit" style="position:absolute; top:600px; left:500px; width:100px;" value="zoom Out" onclick="zoom(500,250,0.5)">
-<input type="submit" style="position:absolute; top:600px; left:700px; width:100px;" value="zoom In" onclick="zoom(500,250,8)">
+<span style="font-family:Arial; position:absolute; left:360px; top:600px;">Workers:</span>
+<select id="Combobox1" onchange="changeNum()" style="position:absolute; left:430px; top:600px; width:50px;">
+<option value="1">1</option>
+<option value="2">2</option>
+<option value="3">3</option>
+<option value="4">4</option>
+<option value="5">5</option>
+<option value="6">6</option>
+<option value="7">7</option>
+<option value="8">8</option>
+</select>
+<input type="submit" style="position:absolute; top:600px; left:540px; width:100px;" value="zoom Out" onclick="zoom(500,250,0.5)">
+<input type="submit" style="position:absolute; top:600px; left:740px; width:100px;" value="zoom In" onclick="zoom(500,250,8)">
 </body>
 </html>
