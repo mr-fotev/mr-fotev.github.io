@@ -12,13 +12,13 @@ var palette = [];
 
 var numWorkers = 8;
 var workers = [];
-var rowData, nextRow = 0, gen = 0;
+var rowData, nextRow = 0;
 
 function createTask(row) 
 {
     var task = 
 	{
-        row: row, width: rowData.width, gen: gen, minX: minX, maxX: maxX,
+        row: row, width: rowData.width, minX: minX, maxX: maxX,
         i: maxY + (minY - maxY) * row / canvas.height, max_iter: max_iter, escape: escape
     };
     return task;
@@ -45,56 +45,9 @@ function drawRow(workerResults)
 	
     ctx.putImageData(this.rowData, 0, workerResults.row);
 }
- 
-window.onload = function()
-{
-    canvas = document.getElementById("fractal");
-    ctx = canvas.getContext("2d");
- 
-    var width = ((maxY - minY) * canvas.width / canvas.height);
-    var r_mid = (maxX + minX) / 2;
-    minX = r_mid - width/2;
-    maxX = r_mid + width/2;
- 
-    rowData = ctx.createImageData(canvas.width, 1);
-
-// на следващите 2 реда нямам представа какво точно се случва..... това са готините цветове	
-    function wrap(x) { x = ((x + 256) & 0x1ff) - 256; return (x<0 ? -x:x); }
-	for (i = 0; i <= this.max_iter; i++) palette.push([wrap(5*i), wrap(7*i), wrap(11*i)]);
-
-	
-    canvas.onclick = function(event) {zoom(event.clientX-180,event.clientY,8);};
- 
-    for (var i = 0; i < numWorkers; i++) 
-	{
-        var worker = new Worker("worker.js");
- 
-        worker.onmessage = function(event) 
-		{
-			var worker=event.target, workerResults=event.data;
-			
-			if (workerResults.gen == gen) drawRow(workerResults);
-    
-			var row = nextRow++;
-			if (row >= canvas.height) worker.idle = true;
-			else 
-			{
-				var task = createTask(row);
-				worker.idle = false;
-				worker.postMessage(task);
-			}
-        }
- 
-        worker.idle = true;
-        workers.push(worker);
-    }
- 
-    startWorkers();
-}
 
 function startWorkers() 
 {
-    gen++;
     nextRow = 0;
     for (var i = 0; i < workers.length; i++) 
 	{
@@ -122,6 +75,52 @@ function zoom(x, y, zm)
 	minY = click_i + height/zm;
  
 	startWorkers();
+}
+
+window.onload = function()
+{
+    canvas = document.getElementById("fractal");
+    ctx = canvas.getContext("2d");
+ 
+    var width = ((maxY - minY) * canvas.width / canvas.height);
+    var r_mid = (maxX + minX) / 2;
+    minX = r_mid - width/2;
+    maxX = r_mid + width/2;
+ 
+    rowData = ctx.createImageData(canvas.width, 1);
+
+// на следващите 2 реда нямам никаква представа какво се случва..... това са готините цветове	
+    function wrap(x) { x = ((x + 256) & 0x1ff) - 256; return (x<0 ? -x:x); }
+	for (i = 0; i <= this.max_iter; i++) palette.push([wrap(5*i), wrap(7*i), wrap(11*i)]);
+
+	
+    canvas.onclick = function(event) {zoom(event.clientX-180,event.clientY,8);};
+ 
+    for (var i = 0; i < numWorkers; i++) 
+	{
+        var worker = new Worker("worker.js");
+ 
+        worker.onmessage = function(event) 
+		{
+			var worker=event.target, workerResults=event.data;
+			
+			drawRow(workerResults);
+    
+			var row = nextRow++;
+			if (row >= canvas.height) worker.idle = true;
+			else 
+			{
+				var task = createTask(row);
+				worker.idle = false;
+				worker.postMessage(task);
+			}
+        }
+ 
+        worker.idle = true;
+        workers.push(worker);
+    }
+ 
+    startWorkers();
 }
 
 </script>
