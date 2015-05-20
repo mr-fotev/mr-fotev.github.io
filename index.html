@@ -93,7 +93,7 @@ window.onload = function()
     function magic(x) { x = ((x + 256) & 0x1ff) - 256; return (x<0 ? -x:x); }
     for (i = 0; i <= max_iter; i++) palette.push([magic(5*i), magic(7*i), magic(11*i)]);
 
-    canvas.onclick = function(event) {zoom(event.clientX-180,event.clientY,8);};
+    canvas.onclick = function(event) {zoom(event.clientX,event.clientY,8);};
  
     for (var i = 0; i < numWorkers; i++) 
     {
