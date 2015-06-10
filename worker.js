@@ -13,10 +13,10 @@ function computeRow(task)
  
         for (iter = 0; x*x + y*y < escape && iter < max_iter; iter++) 
 	{
-		/* z^2*/
+		/* z^2
             	var temp = x*x - y*y + cx;
             	y = 2*x*y + cy;
-            	x = temp;
+            	x = temp;*/
      
 			
 		/* z^3
