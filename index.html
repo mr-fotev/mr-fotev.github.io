@@ -32,15 +32,15 @@ function drawRow(workerResults)
     for (var i = 0; i < rowData.width; i++) 
     {
         if (values[i] < 0) pixelData[4*i] = pixelData[4*i+1] = pixelData[4*i+2] = 0;
-		else 
-		{
+	else 
+	{
             var color = this.palette[values[i]];
             pixelData[4*i] = color[0];
             pixelData[4*i+1] = color[1];
             pixelData[4*i+2] = color[2];
         }
 		
-		pixelData[4*i+3] = 255;
+	pixelData[4*i+3] = 255;
     }
 	
     ctx.putImageData(this.rowData, 0, workerResults.row);
@@ -48,13 +48,13 @@ function drawRow(workerResults)
 
 function startWorkers() 
 {
-	time_start=Date.now();
+    time_start=Date.now();
     nextRow = 0;
     for (var i = 0; i < numWorkers; i++) 
     {
         var worker = workers[i];
         if (worker.idle) 
-		{
+	{
             var task = createTask(nextRow);
             worker.idle = false;
             worker.postMessage(task);
@@ -131,7 +131,7 @@ window.onload = function()
 }
 </script>
 <body>
-<canvas id="fractal" style="position:absolute; left:180px;" width="640" height="480"></canvas>
+<canvas id="fractal" style="position:absolute; left:180px;" width="1000" height="580"></canvas>
 <span style="font-family:Arial; position:absolute; left:290px; top:600px;">Workers:</span>
 <select id="Combobox1" onchange="changeNum()" style="position:absolute; left:360px; top:600px; width:50px;">
 <option value="1">1</option>
@@ -143,8 +143,8 @@ window.onload = function()
 <option value="7">7</option>
 <option value="8">8</option>
 </select>
-<input type="submit" style="position:absolute; top:600px; left:490px; width:100px;" value="zoom Out" onclick="zoom(320,240,0.5)">
-<input type="submit" style="position:absolute; top:600px; left:670px; width:100px;" value="zoom In" onclick="zoom(320,240,8)">
+<input type="submit" style="position:absolute; top:600px; left:490px; width:100px;" value="zoom Out" onclick="zoom(500,290,0.5)">
+<input type="submit" style="position:absolute; top:600px; left:670px; width:100px;" value="zoom In" onclick="zoom(500,290,8)">
 <span style="font-family:Arial; position:absolute; left:850px; top:600px;">Time in mseconds:</span>
 <input type="Editbox" id="time" style="font-family:Arial; position:absolute; left:1000px; top:600px; width:100px;" value="">
 </body>
