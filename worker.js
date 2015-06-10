@@ -13,10 +13,10 @@ function computeRow(task)
  
         for (iter = 0; x*x + y*y < escape && iter < max_iter; iter++) 
 	{
-		/* z^2
+		/* z^2*/
             	var temp = x*x - y*y + cx;
             	y = 2*x*y + cy;
-            	x = temp;*/
+            	x = temp;
      
 			
 		/* z^3
@@ -38,12 +38,12 @@ function computeRow(task)
 		y = temp*sin+cy;
 		*/
 		
-		/* z^2*e^(z^2)*/
+		/* z^2*e^(z^2)
 		var stepx = x*x-y*y, stepy = 2*x*y, temp=Math.pow(Math.E,stepx), cos=Math.cos(stepy), sin=Math.sin(stepy);
 		
 		x = temp*(stepx*cos - stepy*sin) + cx;
 		y = temp*(stepx*sin + stepy*cos) + cy;
-		
+		*/
 	}			
 		
         if (iter == max_iter) iter = -1;
