@@ -16,12 +16,12 @@ var time_start;
 
 function createTask(row) 
 {
-	var task = 
-    	{
-    		row: row, width: rowData.width, minX: minX, maxX: maxX,
-        	i: maxY + (minY - maxY) * row / canvas.height, max_iter: max_iter, escape: escape
-    	};
-    	return task;
+	var task =
+	{
+		row: row, width: rowData.width, minX: minX, maxX: maxX,
+		i: maxY + (minY - maxY) * row / canvas.height, max_iter: max_iter, escape: escape
+	};
+	return task;
 }
 
 function drawRow(workerResults) 
@@ -31,7 +31,7 @@ function drawRow(workerResults)
 	
 	for (var i = 0; i < rowData.width; i++)
 	{
-       		if (values[i] < 0) pixelData[4*i] = pixelData[4*i+1] = pixelData[4*i+2] = 0;
+		if (values[i] < 0) pixelData[4*i] = pixelData[4*i+1] = pixelData[4*i+2] = 0;
 		else 
 		{
 			var color = palette[values[i]];
@@ -41,9 +41,9 @@ function drawRow(workerResults)
 		}
 		
 		pixelData[4*i+3] = 255;
-    	}
-    	
-    	ctx.putImageData(rowData, 0, workerResults.row);
+	}
+	
+	ctx.putImageData(rowData, 0, workerResults.row);
 }
 
 function computeFractal() 
@@ -184,7 +184,7 @@ window.onload = function()
 		}
 		
 		worker.idle = true;
-        	workers.push(worker);
+		workers.push(worker);
 	}
 
 	document.getElementById("Combobox1").value="8";
