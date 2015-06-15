@@ -194,11 +194,11 @@ window.onload = function()
 </script>
 <body>
 
-<canvas id="fractal" style="position:absolute; left:80px;" width="1200" height="580"></canvas>
+<canvas id="fractal" style="position:absolute; left:180px;" width="1200" height="580"></canvas>
 
-<span id="sp1" style="font-family:Arial; position:absolute; left:390px; top:600px;">Workers:</span>
+<span id="sp1" style="font-family:Arial; position:absolute; left:390px; top:620px;">Workers:</span>
 
-<select id="Combobox1" onchange="changeNum()" style="position:absolute; left:460px; top:600px; width:50px;">
+<select id="Combobox1" onchange="changeNum()" style="position:absolute; left:460px; top:620px; width:50px;">
 <option value="1">1</option>
 <option value="2">2</option>
 <option value="4">4</option>
@@ -207,9 +207,9 @@ window.onload = function()
 <option value="24">24</option>
 </select>
 
-<span id="sp2" style="font-family:Arial; position:absolute; left:157px; top:600px;">Resolution:</span>
+<span id="sp2" style="font-family:Arial; position:absolute; left:157px; top:620px;">Resolution:</span>
 
-<select id="Combobox2" onchange="changeRes()" style="position:absolute; left:245px; top:600px; width:100px;">
+<select id="Combobox2" onchange="changeRes()" style="position:absolute; left:245px; top:620px; width:100px;">
 <option value="0">Default</option>
 <option value="1">640x480</option>
 <option value="2">800x600</option>
@@ -218,13 +218,13 @@ window.onload = function()
 <option value="5">4096x2160</option>
 </select>
 
-<input type="submit" id="bt1" style="position:absolute; top:600px; left:590px; width:100px;" value="zoom Out" onclick="zoom(canvas.width/2,canvas.height/2,0.5)">
+<input type="submit" id="bt1" style="position:absolute; left:590px; top:620px; width:100px;" value="zoom Out" onclick="zoom(canvas.width/2,canvas.height/2,0.5)">
 
-<input type="submit" id="bt2" style="position:absolute; top:600px; left:770px; width:100px;" value="zoom In" onclick="zoom(canvas.width/2,canvas.height/2,8)">
+<input type="submit" id="bt2" style="position:absolute; left:770px; top:620px; width:100px;" value="zoom In" onclick="zoom(canvas.width/2,canvas.height/2,8)">
 
-<span id="sp3" style="font-family:Arial; position:absolute; left:950px; top:600px;">Time in mseconds:</span>
+<span id="sp3" style="font-family:Arial; position:absolute; left:950px; top:620px;">Time in mseconds:</span>
 
-<input type="Editbox" id="time" style="font-family:Arial; position:absolute; left:1100px; top:600px; width:100px;" value="">
+<input type="Editbox" id="time" style="font-family:Arial; position:absolute; left:1100px; top:620px; width:100px;" value="">
 
 </body>
 </html>
