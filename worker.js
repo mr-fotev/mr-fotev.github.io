@@ -34,8 +34,8 @@ function computeRow(task)
 		/*e^(z)*/
 		var temp = Math.pow(Math.E,x), cos=Math.cos(y), sin=Math.sin(y);
 		
-		x = temp*cos+cx;
-		y = temp*sin+cy;
+		x = temp*cos-cx;
+		y = temp*sin-cy;
 		
 		
 		/* z^2*e^(z^2)
