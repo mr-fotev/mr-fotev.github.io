@@ -95,7 +95,24 @@ window.onload = function()
     function magic(x) { x = ((x + 256) & 0x1ff) - 256; return (x<0 ? -x:x); }
     for (i = 0; i <= max_iter; i++) palette.push([magic(5*i), magic(7*i), magic(11*i)]);
 
-    canvas.onclick = function(event) {zoom(event.clientX-180,event.clientY,8);};
+    canvas.onclick = function(event) 
+    {
+    	var x;
+	var y;
+	if (e.pageX || e.pageY) 
+	{ 
+	  x = e.pageX;
+	  y = e.pageY;
+	}
+	else 
+	{ 
+  		x = e.clientX + document.body.scrollLeft + document.documentElement.scrollLeft; 
+  		y = e.clientY + document.body.scrollTop + document.documentElement.scrollTop; 
+	} 
+	x -= canvas.offsetLeft;
+	y -= canvas.offsetTop;
+    	zoom(x-180,y,8);
+    };
  
     for (var i = 0; i < numWorkers; i++) 
     {
