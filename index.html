@@ -4,63 +4,63 @@
 var canvas;
 var ctx;
 
-var time_start;
-
 var maxY = 1.5, minY = -1.5, minX = -2.5, maxX = 2;
-var max_iter = 1000, escape = 100;
+var max_iter = 1000, escape = 50;
 var palette = [];
 
-var numWorkers = 8;
+var numWorkers = 8, maxWorkers = 24;
 var workers = [];
 var rowData, nextRow = 0;
 
+var time_start;
+
 function createTask(row) 
 {
-    var task = 
-    {
-        row: row, width: rowData.width, minX: minX, maxX: maxX,
-        i: maxY + (minY - maxY) * row / canvas.height, max_iter: max_iter, escape: escape
-    };
-    return task;
+	var task = 
+    	{
+    		row: row, width: rowData.width, minX: minX, maxX: maxX,
+        	i: maxY + (minY - maxY) * row / canvas.height, max_iter: max_iter, escape: escape
+    	};
+    	return task;
 }
 
 function drawRow(workerResults) 
 {
-    var values = workerResults.values;
-    var pixelData = rowData.data;
-    
-    for (var i = 0; i < rowData.width; i++) 
-    {
-        if (values[i] < 0) pixelData[4*i] = pixelData[4*i+1] = pixelData[4*i+2] = 0;
-	else 
-	{
-            var color = this.palette[values[i]];
-            pixelData[4*i] = color[0];
-            pixelData[4*i+1] = color[1];
-            pixelData[4*i+2] = color[2];
-        }
-		
-	pixelData[4*i+3] = 255;
-    }
+	var values = workerResults.values;
+	var pixelData = rowData.data;
 	
-    ctx.putImageData(this.rowData, 0, workerResults.row);
+	for (var i = 0; i < rowData.width; i++)
+	{
+       		if (values[i] < 0) pixelData[4*i] = pixelData[4*i+1] = pixelData[4*i+2] = 0;
+		else 
+		{
+			var color = palette[values[i]];
+			pixelData[4*i] = color[0];
+			pixelData[4*i+1] = color[1];
+			pixelData[4*i+2] = color[2];
+		}
+		
+		pixelData[4*i+3] = 255;
+    	}
+    	
+    	ctx.putImageData(rowData, 0, workerResults.row);
 }
 
-function startWorkers() 
+function computeFractal() 
 {
-    time_start=Date.now();
-    nextRow = 0;
-    for (var i = 0; i < numWorkers; i++) 
-    {
-        var worker = workers[i];
-        if (worker.idle) 
+	time_start = Date.now();
+	nextRow = 0;
+	for (var i = 0; i < numWorkers; i++)
 	{
-            var task = createTask(nextRow);
-            worker.idle = false;
-            worker.postMessage(task);
-            nextRow++;
-        }
-    }
+		var worker = workers[i];
+		if (worker.idle) 
+		{
+			var task = createTask(nextRow);
+			worker.idle = false;
+			worker.postMessage(task);
+			nextRow++;
+		}
+	}
 }
 
 function zoom(x, y, zm)
@@ -74,53 +74,98 @@ function zoom(x, y, zm)
 	maxX = centerX + width/zm;
 	maxY = centerY - height/zm;
 	minY = centerY + height/zm;
- 
-	startWorkers();
+	
+	computeFractal();
 }
 
-function changeNum(){ numWorkers=parseInt(document.getElementById("Combobox1").value);}
+function changeNum()
+{
+	numWorkers = parseInt(document.getElementById("Combobox1").value);
+
+	ctx.rect(0,0,canvas.width,canvas.height);
+	ctx.fillStyle="white";
+	ctx.fill();
+	
+	computeFractal();
+}
+
+function changeRes()
+{
+	var x, y;
+	
+	switch (document.getElementById("Combobox2").value)
+	{
+		case "1": x=640; y=480; break;
+		case "2": x=800; y=600; break;
+		case "3": x=1280; y=720; break;
+		case "4": x=1920; y=1440; break;
+		case "5": x=4096; y=2160; break;
+		default: x=1000; y=560; break;
+	}
+	
+	var tools = [document.getElementById("sp1"), document.getElementById("sp2"), document.getElementById("sp3"),
+			 document.getElementById("bt1"), document.getElementById("bt2"), document.getElementById("Combobox1"),
+			 document.getElementById("Combobox2"), document.getElementById("time")];
+	
+	canvas.width=x;
+	canvas.height=y;
+	
+	for (i = 0; i < tools.length; i++) tools[i].style.top=(y+40)+"px";
+	
+	var width = (maxY-minY) * canvas.width / canvas.height;
+	var mid=(minX+maxX)/2;
+	
+	minX = mid - width/2;
+	maxX = mid + width/2;
+	
+	rowData = ctx.createImageData(canvas.width, 1);
+
+	computeFractal();
+}
 
 window.onload = function()
 {
-    canvas = document.getElementById("fractal");
-    ctx = canvas.getContext("2d");
- 
-    var width = ((maxY - minY) * canvas.width / canvas.height);
-    var r_mid = (maxX + minX) / 2;
-    minX = r_mid - width/2;
-    maxX = r_mid + width/2;
- 
-    rowData = ctx.createImageData(canvas.width, 1);
+	canvas = document.getElementById("fractal");
+	ctx = canvas.getContext("2d");
 
-    function magic(x) { x = ((x + 256) & 0x1ff) - 256; return (x<0 ? -x:x); }
-    for (i = 0; i <= max_iter; i++) palette.push([magic(5*i), magic(7*i), magic(11*i)]);
+	var width = (maxY-minY) * canvas.width / canvas.height;
+	var mid=(minX+maxX)/2;
+	
+	minX = mid - width/2;
+	maxX = mid + width/2;
+ 
+	rowData = ctx.createImageData(canvas.width, 1);
 
-    canvas.onclick = function(e) 
-    {
-    	var x;
-	var y;
-	if (e.pageX || e.pageY) 
-	{ 
-	  x = e.pageX;
-	  y = e.pageY;
-	}
-	else 
-	{ 
-  		x = e.clientX + document.body.scrollLeft + document.documentElement.scrollLeft; 
-  		y = e.clientY + document.body.scrollTop + document.documentElement.scrollTop; 
-	} 
-	x -= canvas.offsetLeft;
-	y -= canvas.offsetTop;
-    	zoom(x-180,y,8);
-    };
+	function magic(x) { x = ((x + 256) & 0x1ff) - 256; return (x<0 ? -x:x); }
+	for (i = 0; i <= max_iter; i++) palette.push([magic(5*i), magic(7*i), magic(11*i)]);
+
+	canvas.onclick = function(e) 
+	{
+		var x;
+		var y;
+		if (e.pageX || e.pageY) 
+		{ 
+			x = e.pageX;
+			y = e.pageY;
+		}
+		else 
+		{ 
+			x = e.clientX + document.body.scrollLeft + document.documentElement.scrollLeft; 
+			y = e.clientY + document.body.scrollTop + document.documentElement.scrollTop; 
+		}
+		x -= canvas.offsetLeft;
+		y -= canvas.offsetTop;
+    	
+		zoom(x,y,8);
+	};
  
-    for (var i = 0; i < numWorkers; i++) 
-    {
-        var worker = new Worker("worker.js");
+	for (var i = 0; i < maxWorkers; i++) 
+	{
+		var worker = new Worker("worker.js");
  
-        worker.onmessage = function(event) 
+		worker.onmessage = function(e) 
 		{
-			var worker=event.target, workerResults=event.data;
+			var worker=e.target, workerResults=e.data;
 			
 			drawRow(workerResults);
     
@@ -136,33 +181,50 @@ window.onload = function()
 				worker.idle = false;
 				worker.postMessage(task);
 			}
-        }
- 
-        worker.idle = true;
-        workers.push(worker);
-    }
- 
-    document.getElementById("Combobox1").value="8";
+		}
+		
+		worker.idle = true;
+        	workers.push(worker);
+	}
+
+	document.getElementById("Combobox1").value="8";
 	
-    startWorkers();
+	computeFractal();
 }
 </script>
 <body>
-<canvas id="fractal" style="position:absolute; left:180px;" width="1000" height="580"></canvas>
-<span style="font-family:Arial; position:absolute; left:290px; top:600px;">Workers:</span>
-<select id="Combobox1" onchange="changeNum()" style="position:absolute; left:360px; top:600px; width:50px;">
+
+<canvas id="fractal" style="position:absolute; left:180px;" width="1000" height="560"></canvas>
+
+<span id="sp1" style="font-family:Arial; position:absolute; left:390px; top:600px;">Workers:</span>
+
+<select id="Combobox1" onchange="changeNum()" style="position:absolute; left:460px; top:600px; width:50px;">
 <option value="1">1</option>
 <option value="2">2</option>
-<option value="3">3</option>
 <option value="4">4</option>
-<option value="5">5</option>
-<option value="6">6</option>
-<option value="7">7</option>
 <option value="8">8</option>
+<option value="16">16</option>
+<option value="24">24</option>
 </select>
-<input type="submit" style="position:absolute; top:600px; left:490px; width:100px;" value="zoom Out" onclick="zoom(500,290,0.5)">
-<input type="submit" style="position:absolute; top:600px; left:670px; width:100px;" value="zoom In" onclick="zoom(500,290,8)">
-<span style="font-family:Arial; position:absolute; left:850px; top:600px;">Time in mseconds:</span>
-<input type="Editbox" id="time" style="font-family:Arial; position:absolute; left:1000px; top:600px; width:100px;" value="">
+
+<span id="sp2" style="font-family:Arial; position:absolute; left:157px; top:600px;">Resolution:</span>
+
+<select id="Combobox2" onchange="changeRes()" style="position:absolute; left:245px; top:600px; width:100px;">
+<option value="0">Default</option>
+<option value="1">640x480</option>
+<option value="2">800x600</option>
+<option value="3">1280x720</option>
+<option value="4">1920x1440</option>
+<option value="5">4096x2160</option>
+</select>
+
+<input type="submit" id="bt1" style="position:absolute; top:600px; left:590px; width:100px;" value="zoom Out" onclick="zoom(canvas.width/2,canvas.height/2,0.5)">
+
+<input type="submit" id="bt2" style="position:absolute; top:600px; left:770px; width:100px;" value="zoom In" onclick="zoom(canvas.width/2,canvas.height/2,8)">
+
+<span id="sp3" style="font-family:Arial; position:absolute; left:950px; top:600px;">Time in mseconds:</span>
+
+<input type="Editbox" id="time" style="font-family:Arial; position:absolute; left:1100px; top:600px; width:100px;" value="">
+
 </body>
 </html>
