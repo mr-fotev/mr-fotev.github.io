@@ -143,7 +143,7 @@ window.onload = function()
  
 	rowData = ctx.createImageData(canvas.width, 1);
 
-	for (i = 0; i <= max_iter; i++) palette.push([magic(5*i), magic(7*i), magic(11*i)]);
+	for (i = 0; i < max_iter; i++) palette.push([magic(5*i), magic(7*i), magic(11*i)]);
 
 	canvas.onclick = function(e) 
 	{
