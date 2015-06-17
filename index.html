@@ -125,9 +125,9 @@ function changeRes()
 
 function magic(x) // time to ride the bike!
 { 
-	x = ((x + 0x100) & 0x1FF) - 0x100;
-	tau = (x >> 0x1F);
-	return (tau ^ x) - tau;
+	x = (x + 0x100) & 0x1FF - 0x100;
+	tau = x >> 0x1F;
+	return tau ^ x - tau;
 }
 
 window.onload = function()
