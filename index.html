@@ -100,7 +100,7 @@ function changeRes()
 		case "3": x=1280; y=720; break;
 		case "4": x=1920; y=1440; break;
 		case "5": x=4096; y=2160; break;
-		default: x=1200; y=560; break;
+		default: x=1000; y=560; break;
 	}
 	
 	var tools = [document.getElementById("sp1"), document.getElementById("sp2"), document.getElementById("sp3"),
@@ -123,9 +123,11 @@ function changeRes()
 	computeFractal();
 }
 
-function magic(x) 
-{
-	return Мath.abs(((x + 256) & 0x1ff) - 256);
+function magic(x) // time to ride the bike!
+{ 
+	x = ((x + 0x100) & 0x1FF) - 0x100;
+	tau = (x >> 0x1F);
+	return (tau ^ x) - tau;
 }
 
 window.onload = function()
@@ -206,7 +208,6 @@ window.onload = function()
 <option value="1">1</option>
 <option value="2">2</option>
 <option value="4">4</option>
-<option value="6">6</option>
 <option value="8">8</option>
 <option value="16">16</option>
 <option value="24">24</option>
