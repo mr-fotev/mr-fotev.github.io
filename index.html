@@ -126,11 +126,11 @@ function changeRes()
 function magic(x) // time to ride the bike!
 { 
 	sigma = ((x + 0x100) & 0x1FF) - 0x100;
-	tau = sigma >> 0x1F;
+	tau = sigma >> 0x1f;
 	//return (tau ^ sigma) - tau;
 	
 	// if you are ready for the deep sh*t return this row:
-	 return (tau + sigma) ^ tau;
+	 return (sigma>>31 + sigma) ^ (sigma>>31);
 }
 
 window.onload = function()
