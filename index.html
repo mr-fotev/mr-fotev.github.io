@@ -1,5 +1,6 @@
 <html>
 <title>Mandelbrot</title>
+<link rel="shortcut icon" href="icon.ico">
 <script>
 var canvas;
 var ctx;
@@ -31,16 +32,16 @@ function drawRow(workerResults)
 	
 	for (var i = 0; i < rowData.width; i++)
 	{
-		if (values[i] < 0) pixelData[4*i] = pixelData[4*i+1] = pixelData[4*i+2] = 0;
+		if (values[i] < 0) pixelData[4*i] = pixelData[4*i + 1] = pixelData[4*i + 2] = 0;
 		else 
 		{
 			var color = palette[values[i]];
 			pixelData[4*i] = color[0];
-			pixelData[4*i+1] = color[1];
-			pixelData[4*i+2] = color[2];
+			pixelData[4*i + 1] = color[1];
+			pixelData[4*i + 2] = color[2];
 		}
 		
-		pixelData[4*i+3] = 255;
+		pixelData[4*i + 3] = 255;
 	}
 	
 	ctx.putImageData(rowData, 0, workerResults.row);
@@ -82,8 +83,8 @@ function changeNum()
 {
 	numWorkers = parseInt(document.getElementById("Combobox1").value);
 
-	ctx.rect(0,0,canvas.width,canvas.height);
-	ctx.fillStyle="white";
+	ctx.rect(0, 0, canvas.width, canvas.height);
+	ctx.fillStyle = "white";
 	ctx.fill();
 	
 	computeFractal();
@@ -95,25 +96,25 @@ function changeRes()
 	
 	switch (document.getElementById("Combobox2").value)
 	{
-		case "1": x=640; y=480; break;
-		case "2": x=800; y=600; break;
-		case "3": x=1280; y=720; break;
-		case "4": x=1920; y=1440; break;
-		case "5": x=4096; y=2160; break;
-		default: x=1000; y=560; break;
+		case "1": x = 640; y = 480; break;
+		case "2": x = 800; y = 600; break;
+		case "3": x = 1280; y = 720; break;
+		case "4": x = 1920; y = 1440; break;
+		case "5": x = 4096; y = 2160; break;
+		default: x = 1200; y = 560; break;
 	}
 	
 	var tools = [document.getElementById("sp1"), document.getElementById("sp2"), document.getElementById("sp3"),
 			 document.getElementById("bt1"), document.getElementById("bt2"), document.getElementById("Combobox1"),
 			 document.getElementById("Combobox2"), document.getElementById("time")];
 	
-	canvas.width=x;
-	canvas.height=y;
+	canvas.width = x;
+	canvas.height = y;
 	
-	for (i = 0; i < tools.length; i++) tools[i].style.top=(y+40)+"px";
+	for (i = 0; i < tools.length; i++) tools[i].style.top = (y + 40) + "px";
 	
 	var width = (maxY-minY) * canvas.width / canvas.height;
-	var mid=(minX+maxX)/2;
+	var mid = (minX + maxX) / 2;
 	
 	minX = mid - width/2;
 	maxX = mid + width/2;
@@ -127,7 +128,7 @@ function magic(x) // time to ride the bike!
 { 
 	sigma = ((x + 0x100) & 0x1FF) - 0x100;
 	tau = sigma >> 0x1F;
-	return (tau ^ sigma) - tau;
+	return (tau ^ sigma) - tau;	
 }
 
 window.onload = function()
@@ -136,7 +137,7 @@ window.onload = function()
 	ctx = canvas.getContext("2d");
 
 	var width = (maxY-minY) * canvas.width / canvas.height;
-	var mid=(minX+maxX)/2;
+	var mid = (minX + maxX) / 2;
 	
 	minX = mid - width/2;
 	maxX = mid + width/2;
@@ -162,7 +163,7 @@ window.onload = function()
 		x -= canvas.offsetLeft;
 		y -= canvas.offsetTop;
     	
-		zoom(x,y,8);
+		zoom(x, y, 8);
 	};
  
 	for (var i = 0; i < maxWorkers; i++) 
@@ -179,7 +180,7 @@ window.onload = function()
 			if (row >= canvas.height)
 			{
 				worker.idle = true; 
-				if (worker==workers[numWorkers-1]) document.getElementById("time").value = (Date.now()-time_start);
+				if (worker == workers[numWorkers-1]) document.getElementById("time").value = (Date.now() - time_start);
 			}
 			else 
 			{
@@ -193,7 +194,7 @@ window.onload = function()
 		workers.push(worker);
 	}
 
-	document.getElementById("Combobox1").value="8";
+	document.getElementById("Combobox1").value = "8";
 	
 	computeFractal();
 }
