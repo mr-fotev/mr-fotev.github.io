@@ -46,7 +46,7 @@ function computeRow(task)
  
 			for (iter = 0; x*x + y*y < escape && iter < max_iter; iter++) 
 			{ 
-				var temp = Math.pow(Math.E,x), cos=Math.cos(y), sin=Math.sin(y); 
+				var temp = Math.pow(Math.E,x), cos = Math.cos(y), sin = Math.sin(y); 
 				x = temp*cos - cx; 
 				y = temp*sin - cy;
 			}
@@ -64,7 +64,7 @@ function computeRow(task)
  
 			for (iter = 0; x*x + y*y < escape && iter < max_iter; iter++) 
 			{ 
-				var stepx = x*x-y*y, stepy = 2*x*y, temp=Math.pow(Math.E,stepx), cos=Math.cos(stepy), sin=Math.sin(stepy);
+				var stepx = x*x-y*y, stepy = 2*x*y, temp = Math.pow(Math.E,stepx), cos = Math.cos(stepy), sin = Math.sin(stepy);
 				x = temp*(stepx*cos - stepy*sin) + cx;
 				y = temp*(stepx*sin + stepy*cos) + cy;
 			}
