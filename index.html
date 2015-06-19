@@ -1,26 +1,48 @@
 <html>
+
 <title>Mandelbrot</title>
+
 <link rel="shortcut icon" href="icon.ico">
+
+<style type="text/css">
+
+span { font-family:Arial; position:absolute; }
+input[type="submit"] { position:absolute; width:100px; height:19px; }
+input[type="Editbox"] {font-family:Arial; position:absolute; width:100px; height:19px; }
+select { position:absolute; }
+
+</style>
+
 <script>
 var canvas;
 var ctx;
 
-var maxY = 1.5, minY = -1.5, minX = -2.5, maxX = 2;
+var Fract;
+var selected_fractal;
+
+var maxY = 1.5, minY = -1.5, minX = -2, maxX = 2;
 var max_iter = 1000, escape = 50;
 var palette = [];
 
-var numWorkers = 8, maxWorkers = 24;
+var numWorkers = 4, maxWorkers = 24;
 var workers = [];
 var rowData, nextRow = 0;
 
 var time_start;
+
+var JuliaX;
+var JuliaY;
+
+var jjx;
+var jjy;
 
 function createTask(row) 
 {
 	var task =
 	{
 		row: row, width: rowData.width, minX: minX, maxX: maxX,
-		i: maxY + (minY - maxY) * row / canvas.height, max_iter: max_iter, escape: escape
+		i: maxY + (minY - maxY) * row / canvas.height, max_iter: max_iter, escape: escape,
+		fr: selected_fractal, jx: jjx, jy: jjy
 	};
 	return task;
 }
@@ -111,9 +133,9 @@ function changeRes()
 	canvas.width = x;
 	canvas.height = y;
 	
-	for (i = 0; i < tools.length; i++) tools[i].style.top = (y + 40) + "px";
+	for (i = 0; i < tools.length; i++) tools[i].style.top = (y + 60) + "px";
 	
-	var width = (maxY - minY) * canvas.width / canvas.height;
+	var width = (maxY-minY) * canvas.width / canvas.height;
 	var mid = (minX + maxX) / 2;
 	
 	minX = mid - width/2;
@@ -124,15 +146,65 @@ function changeRes()
 	computeFractal();
 }
 
+function selectFr()
+{
+	JuliaX.disabled = true;
+	JuliaY.disabled = true;
+	
+	JuliaX.style.background = "lightgray";
+	JuliaY.style.background = "lightgray";
+	
+	if (Fract.value == "1")
+	{
+		JuliaX.disabled = false;
+		JuliaY.disabled = false;
+		
+		JuliaX.style.background = "white";
+		JuliaY.style.background = "white";
+	}
+}
+
+function fractalize()
+{
+	var tau = parseInt(Fract.value);
+	
+	if (tau == 1)
+	{
+		jjx = parseFloat(JuliaX.value);
+		jjy = parseFloat(JuliaY.value);
+		if (isNaN(jjx) || isNaN(jjy)) 
+		{
+			alert("Error!");
+			return;
+		}
+	}
+	
+	selected_fractal = tau;
+	
+	maxY = 1.5; minY = -1.5; minX = -2; maxX = 2;
+	
+	var width = (maxY-minY) * canvas.width / canvas.height;
+	var mid = (minX + maxX) / 2;
+	
+	minX = mid - width/2;
+	maxX = mid + width/2;
+	
+	ctx.rect(0, 0, canvas.width, canvas.height);
+	ctx.fillStyle = "white";
+	ctx.fill();
+	
+	computeFractal();
+}
+
 function magic(x)
-{ 
+{
 	sigma = ((x + 0x100) & 0x1FF) - 0x100;
 	tau = sigma >> 0x1F;
 	return (tau ^ sigma) - tau;
-	
+
 /* 
-	Let X be a non-negative integer in the form: X = A * 256 + B, where 0 <= B < 256
-	This function returns B if A is even and (256 - B) if A is odd
+	Let X be a non-negative integer in the form: X = A * 256 + B where 0 <= B < 256
+	This function returns B if A is even and 256 - B if A is odd
 */	
 }
 
@@ -141,6 +213,18 @@ window.onload = function()
 	canvas = document.getElementById("fractal");
 	ctx = canvas.getContext("2d");
 
+	Fract = document.getElementById("Combobox0");
+	selected_fractal = 0;
+	
+	JuliaX = document.getElementById("JuliaX");
+	JuliaY = document.getElementById("JuliaY");
+	
+	JuliaX.disabled = true;
+	JuliaY.disabled = true;
+	
+	JuliaX.style.background = "lightgray";
+	JuliaY.style.background = "lightgray";
+	
 	var width = (maxY-minY) * canvas.width / canvas.height;
 	var mid = (minX + maxX) / 2;
 	
@@ -198,30 +282,48 @@ window.onload = function()
 		worker.idle = true;
 		workers.push(worker);
 	}
-
-	document.getElementById("Combobox1").value = "8";
 	
 	computeFractal();
 }
 </script>
 <body>
 
-<canvas id="fractal" style="position:absolute; left:80px;" width="1200" height="580"></canvas>
+<span id="sp0" style="left:183px;">Fractal:</span>
 
-<span id="sp1" style="font-family:Arial; position:absolute; left:390px; top:620px;">Workers:</span>
+<select id="Combobox0" onchange="selectFr()" style="left:245px; width:200px;">
+<option value="0">Pure Mandelbrot (z^2 + c)</option>
+<option value="1">Custom Julia (z^2 + s)</option>
+<option value="2">e^z - c</option>
+<option value="3">z^2 * e^(z^2) + c</option>
+</select>
 
-<select id="Combobox1" onchange="changeNum()" style="position:absolute; left:460px; top:620px; width:50px;">
+<span id="sp01" style="left:470px;">Julia R:</span>
+
+<input type="Editbox" id="JuliaX" style="left:530px;" value="">
+
+<span id="sp02" style="left:653px;">Julia Im:</span>
+
+<input type="Editbox" id="JuliaY" style="left:720px;" value="">
+
+<input type="submit" id="bt0" onclick="fractalize()" style="left:850px;" value="Fractalize">
+
+<canvas id="fractal" style="position:absolute; left:80px; top:40px;" width="1200" height="560"></canvas>
+
+<span id="sp1" style="left:390px; top:620px;">Workers:</span>
+
+<select id="Combobox1" onchange="changeNum()" style="left:460px; top:620px; width:50px;">
 <option value="1">1</option>
 <option value="2">2</option>
-<option value="4">4</option>
+<option value="4" selected="selected">4</option>
+<option value="6">6</option>
 <option value="8">8</option>
 <option value="16">16</option>
 <option value="24">24</option>
 </select>
 
-<span id="sp2" style="font-family:Arial; position:absolute; left:157px; top:620px;">Resolution:</span>
+<span id="sp2" style="left:157px; top:620px;">Resolution:</span>
 
-<select id="Combobox2" onchange="changeRes()" style="position:absolute; left:245px; top:620px; width:100px;">
+<select id="Combobox2" onchange="changeRes()" style="left:245px; top:620px; width:100px;">
 <option value="0">Default</option>
 <option value="1">640x480</option>
 <option value="2">800x600</option>
@@ -230,13 +332,13 @@ window.onload = function()
 <option value="5">4096x2160</option>
 </select>
 
-<input type="submit" id="bt1" style="position:absolute; left:590px; top:620px; width:100px;" value="zoom Out" onclick="zoom(canvas.width/2,canvas.height/2,0.5)">
+<input type="submit" id="bt1" style="left:590px; top:620px;" value="zoom Out" onclick="zoom(canvas.width/2,canvas.height/2,0.5)">
 
-<input type="submit" id="bt2" style="position:absolute; left:770px; top:620px; width:100px;" value="zoom In" onclick="zoom(canvas.width/2,canvas.height/2,8)">
+<input type="submit" id="bt2" style="left:770px; top:620px;" value="zoom In" onclick="zoom(canvas.width/2,canvas.height/2,8)">
 
-<span id="sp3" style="font-family:Arial; position:absolute; left:950px; top:620px;">Time in mseconds:</span>
+<span id="sp3" style="left:950px; top:620px;">Time in mseconds:</span>
 
-<input type="Editbox" id="time" style="font-family:Arial; position:absolute; left:1100px; top:620px; width:100px;" value="">
+<input type="Editbox" id="time" style="left:1100px; top:620px;" value="">
 
 </body>
 </html>
