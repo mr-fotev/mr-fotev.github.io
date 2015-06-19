@@ -16,7 +16,7 @@ function computeRow(task)
 		for (var i = 0; i < task.width; i++)
 		{
 			var cx = task.minX + (task.maxX - task.minX) * i / task.width;
-			var x = (fr == 1 ? cx:0), y = (fr == 1 ? cy:0);
+			var x = 0, y = 0;
  
 			for (iter = 0; x*x + y*y < escape && iter < max_iter; iter++) { var temp = x*x - y*y + cx; y = 2*x*y + cy; x = temp; }
 			
@@ -29,7 +29,7 @@ function computeRow(task)
 		for (var i = 0; i < task.width; i++)
 		{
 			var cx = task.minX + (task.maxX - task.minX) * i / task.width;
-			var x = (fr == 1 ? cx:0), y = (fr == 1 ? cy:0);
+			var x = cx, y = cy;
  
 			for (iter = 0; x*x + y*y < escape && iter < max_iter; iter++) { var temp = x*x - y*y + jx; y = 2*x*y + jy; x = temp; }
 			
@@ -42,7 +42,7 @@ function computeRow(task)
 		for (var i = 0; i < task.width; i++)
 		{
 			var cx = task.minX + (task.maxX - task.minX) * i / task.width;
-			var x = (fr == 1 ? cx:0), y = (fr == 1 ? cy:0);
+			var x = 0, y = 0;
  
 			for (iter = 0; x*x + y*y < escape && iter < max_iter; iter++) 
 			{ 
@@ -60,7 +60,7 @@ function computeRow(task)
 		for (var i = 0; i < task.width; i++)
 		{
 			var cx = task.minX + (task.maxX - task.minX) * i / task.width;
-			var x = (fr == 1 ? cx:0), y = (fr == 1 ? cy:0);
+			var x = 0, y = 0;
  
 			for (iter = 0; x*x + y*y < escape && iter < max_iter; iter++) 
 			{ 
