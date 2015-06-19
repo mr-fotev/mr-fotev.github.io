@@ -1,4 +1,4 @@
-# Mandelbrot Set 
+# Mandelbrot and Julia Set 
 
 Combining different implementation techniques... it's not my own implementation!
 
