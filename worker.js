@@ -1,10 +1,10 @@
 function computeRow(task) 
 {
-    var iter = 0;
-    var cy = task.i;
-    var max_iter = task.max_iter;
-    var escape = task.escape * task.escape;
-    task.values = [];
+	var iter = 0;
+	var cy = task.i;
+	var max_iter = task.max_iter;
+	var escape = task.escape * task.escape;
+	task.values = [];
 	
 	var jx = task.jx;
 	var jy = task.jy;
@@ -81,6 +81,6 @@ function computeRow(task)
  
 onmessage = function (task)
 {
-    var workerResult = computeRow(task.data);
-    postMessage(workerResult);
+	var workerResult = computeRow(task.data);
+	postMessage(workerResult);
 }
