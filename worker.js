@@ -76,7 +76,7 @@ function computeRow(task)
 		
 	}
 	
-    return task;
+	return task;
 }
  
 onmessage = function (task)
