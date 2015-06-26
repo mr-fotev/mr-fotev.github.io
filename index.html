@@ -7,9 +7,9 @@
 <style type="text/css">
 
 span { font-family:Arial; position:absolute; }
-input[type="submit"] { position:absolute; width:100px; height:20px; }
-input[type="Editbox"] {font-family:Arial; position:absolute; width:100px; height:20px; }
-select { position:absolute; height:20px; }
+input[type="submit"] { position:absolute; width:100px; height:19px; }
+input[type="Editbox"] {font-family:Arial; position:absolute; width:100px; height:19px; }
+select { position:absolute; }
 
 </style>
 
@@ -33,8 +33,8 @@ var time_start;
 var JuliaX;
 var JuliaY;
 
-var jjx;
-var jjy;
+var jx;
+var jy;
 
 function createTask(row) 
 {
@@ -42,7 +42,7 @@ function createTask(row)
 	{
 		row: row, width: rowData.width, minX: minX, maxX: maxX,
 		i: maxY + (minY - maxY) * row / canvas.height, max_iter: max_iter, escape: escape,
-		fr: selected_fractal, jx: jjx, jy: jjy
+		fr: selected_fractal, jx: jx, jy: jy
 	};
 	return task;
 }
@@ -121,9 +121,9 @@ function changeRes()
 		case "1": x = 640; y = 480; break;
 		case "2": x = 800; y = 600; break;
 		case "3": x = 1280; y = 720; break;
-		case "4": x = 1920; y = 1440; break;
+		case "4": x = 1920; y = 1080; break;
 		case "5": x = 4096; y = 2160; break;
-		default: x = 1200; y = 560; break;
+		default: x = window.innerWidth - 120; y = window.innerHeight - 100; break;
 	}
 	
 	var tools = [document.getElementById("sp1"), document.getElementById("sp2"), document.getElementById("sp3"),
@@ -148,19 +148,19 @@ function changeRes()
 
 function selectFr()
 {
-	JuliaX.disabled = true;
+    JuliaX.disabled = true;
 	JuliaY.disabled = true;
 	
-	JuliaX.style.background = "#E6E6E6";
-	JuliaY.style.background = "#E6E6E6";
+	JuliaX.style.background = "lightgray";
+	JuliaY.style.background = "lightgray";
 	
 	if (Fract.value == "1")
 	{
 		JuliaX.disabled = false;
 		JuliaY.disabled = false;
 		
-		JuliaX.style.background = "#FFFFFF";
-		JuliaY.style.background = "#FFFFFF";
+		JuliaX.style.background = "white";
+		JuliaY.style.background = "white";
 	}
 }
 
@@ -170,9 +170,9 @@ function fractalize()
 	
 	if (tau == 1)
 	{
-		jjx = parseFloat(JuliaX.value);
-		jjy = parseFloat(JuliaY.value);
-		if (isNaN(jjx) || isNaN(jjy)) 
+		jx = parseFloat(JuliaX.value);
+		jy = parseFloat(JuliaY.value);
+		if (isNaN(jx) || isNaN(jy)) 
 		{
 			alert("Error!");
 			return;
@@ -209,8 +209,10 @@ function magic(x)
 }
 
 window.onload = function()
-{
+{	
 	canvas = document.getElementById("fractal");
+	canvas.width = window.innerWidth - 120; 
+	canvas.height = window.innerHeight - 100;
 	ctx = canvas.getContext("2d");
 
 	Fract = document.getElementById("Combobox0");
@@ -222,8 +224,8 @@ window.onload = function()
 	JuliaX.disabled = true;
 	JuliaY.disabled = true;
 	
-	JuliaX.style.background = "#E6E6E6";
-	JuliaY.style.background = "#E6E6E6";
+	JuliaX.style.background = "lightgray";
+	JuliaY.style.background = "lightgray";
 	
 	var width = (maxY-minY) * canvas.width / canvas.height;
 	var mid = (minX + maxX) / 2;
@@ -261,7 +263,7 @@ window.onload = function()
  
 		worker.onmessage = function(e) 
 		{
-			var worker = e.target, workerResults = e.data;
+			var worker=e.target, workerResults=e.data;
 			
 			drawRow(workerResults);
     
@@ -292,14 +294,14 @@ window.onload = function()
 
 <select id="Combobox0" onchange="selectFr()" style="left:245px; width:200px;">
 <option value="0">Pure Mandelbrot (z^2 + c)</option>
-<option value="1">Julia (z^2 + s)</option>
+<option value="1">Custom Julia (z^2 + s)</option>
 <option value="2">e^z - c</option>
 <option value="3">z^2 * e^(z^2) + c</option>
 </select>
 
-<span id="sp01" style="left:470px;">Julia Re:</span>
+<span id="sp01" style="left:470px;">Julia R:</span>
 
-<input type="Editbox" id="JuliaX" style="left:539px;" value="">
+<input type="Editbox" id="JuliaX" style="left:530px;" value="">
 
 <span id="sp02" style="left:653px;">Julia Im:</span>
 
@@ -307,7 +309,7 @@ window.onload = function()
 
 <input type="submit" id="bt0" onclick="fractalize()" style="left:850px;" value="Fractalize">
 
-<canvas id="fractal" style="position:absolute; left:80px; top:40px;" width="1200" height="560"></canvas>
+<canvas id="fractal" style="position:absolute; left:60px; top:40px;"></canvas>
 
 <span id="sp1" style="left:390px; top:620px;">Workers:</span>
 
@@ -328,7 +330,7 @@ window.onload = function()
 <option value="1">640x480</option>
 <option value="2">800x600</option>
 <option value="3">1280x720</option>
-<option value="4">1920x1440</option>
+<option value="4">1920x1080</option>
 <option value="5">4096x2160</option>
 </select>
 
