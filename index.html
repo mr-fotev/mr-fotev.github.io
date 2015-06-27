@@ -36,6 +36,8 @@ var JuliaY;
 var jx;
 var jy;
 
+var tools;
+
 function createTask(row) 
 {
 	var task =
@@ -132,10 +134,6 @@ function changeRes()
 		default: x = dev().x; y = dev().y; break;
 	}
 	
-	var tools = [document.getElementById("sp1"), document.getElementById("sp2"), document.getElementById("sp3"),
-			 document.getElementById("bt1"), document.getElementById("bt2"), document.getElementById("Combobox1"),
-			 document.getElementById("Combobox2"), document.getElementById("time")];
-	
 	canvas.width = x;
 	canvas.height = y;
 	
@@ -154,7 +152,7 @@ function changeRes()
 
 function selectFr()
 {
-    JuliaX.disabled = true;
+	JuliaX.disabled = true;
 	JuliaY.disabled = true;
 	
 	JuliaX.style.background = "lightgray";
@@ -222,9 +220,9 @@ window.onload = function()
 	ctx = canvas.getContext("2d");
 
 
-	var tools = [document.getElementById("sp1"), document.getElementById("sp2"), document.getElementById("sp3"),
-			 document.getElementById("bt1"), document.getElementById("bt2"), document.getElementById("Combobox1"),
-			 document.getElementById("Combobox2"), document.getElementById("time")];
+	tools = [document.getElementById("sp1"), document.getElementById("sp2"), document.getElementById("sp3"),
+		 document.getElementById("bt1"), document.getElementById("bt2"), document.getElementById("Combobox1"),
+		 document.getElementById("Combobox2"), document.getElementById("time")];
 	
 	for (i = 0; i < tools.length; i++) tools[i].style.top = (canvas.height + 60) + "px";
 	
