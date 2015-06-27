@@ -221,6 +221,13 @@ window.onload = function()
 	canvas.height = dev().y;
 	ctx = canvas.getContext("2d");
 
+
+	var tools = [document.getElementById("sp1"), document.getElementById("sp2"), document.getElementById("sp3"),
+			 document.getElementById("bt1"), document.getElementById("bt2"), document.getElementById("Combobox1"),
+			 document.getElementById("Combobox2"), document.getElementById("time")];
+	
+	for (i = 0; i < tools.length; i++) tools[i].style.top = (canvas.height + 60) + "px";
+	
 	Fract = document.getElementById("Combobox0");
 	selected_fractal = 0;
 	
