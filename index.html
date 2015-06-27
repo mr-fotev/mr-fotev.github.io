@@ -86,7 +86,6 @@ function computeFractal()
 			nextRow++;
 		}
 	}
-	document.getElementById("time").value = (time_end - time_start);
 }
 
 function zoom(x, y, zm)
@@ -283,7 +282,7 @@ window.onload = function()
 			if (row >= canvas.height)
 			{
 				worker.idle = true; 
-				time_end = Date.now();
+				document.getElementById("time").value = Date.now() - time_start;
 			}
 			else 
 			{
