@@ -28,7 +28,7 @@ var numWorkers = 4, maxWorkers = 24;
 var workers = [];
 var rowData, nextRow = 0;
 
-var time_start;
+var time_start, time_end;
 
 var JuliaX;
 var JuliaY;
@@ -86,6 +86,7 @@ function computeFractal()
 			nextRow++;
 		}
 	}
+	document.getElementById("time").value = time_end - time_start;
 }
 
 function zoom(x, y, zm)
@@ -274,7 +275,7 @@ window.onload = function()
  
 		worker.onmessage = function(e) 
 		{
-			var worker=e.target, workerResults=e.data;
+			var worker = e.target, workerResults = e.data;
 			
 			drawRow(workerResults);
     
@@ -282,7 +283,7 @@ window.onload = function()
 			if (row >= canvas.height)
 			{
 				worker.idle = true; 
-				if (worker == workers[numWorkers-1]) document.getElementById("time").value = (Date.now() - time_start);
+				time_end = Date.now();
 			}
 			else 
 			{
