@@ -285,10 +285,7 @@ window.onload = function()
 			{
 				worker.idle = true;
 				comp_end++;
-				if (comp_end == numWorkers)
-				{
-					document.getElementById("time").value = Date.now() - time_start;
-				}
+				if (comp_end == numWorkers) document.getElementById("time").value = Date.now() - time_start;
 			}
 			else 
 			{
