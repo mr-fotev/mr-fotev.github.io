@@ -75,7 +75,7 @@ function drawRow(workerResults)
 function computeFractal() 
 {
 	time_start = Date.now();
-	comp_end = false;
+	comp_end = 0;
 	nextRow = 0;
 	for (var i = 0; i < numWorkers; i++)
 	{
@@ -283,11 +283,11 @@ window.onload = function()
 			var row = nextRow++;
 			if (row > canvas.height)
 			{
-				worker.idle = true; 
-				if (comp_end == false)
+				worker.idle = true;
+				comp_end++;
+				if (comp_end == numWorkers)
 				{
 					document.getElementById("time").value = Date.now() - time_start;
-					comp_end = true;
 				}
 			}
 			else 
