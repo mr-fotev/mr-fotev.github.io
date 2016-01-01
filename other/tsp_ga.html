@@ -15,7 +15,13 @@ function init()
 	Gen = 0;
 	
 	data = [];
-	for (var i = 0; i < N; i++) data.push({x: 20 + Math.floor((cW-40)*Math.random()), y: 20 + Math.floor((cH-40)*Math.random())});	
+	for (var i = 0; i < N; i++)
+	{
+		var dx = Math.floor((cW-40)*Math.random());
+		var dy = Math.floor((cH-40)*Math.random());
+	
+		data.push({x: 20 + dx, y: 20 + dy});
+	}
 	
 	B = [];
 	H = {};
@@ -120,7 +126,8 @@ function draw()
 		lines(B[0].p);
 	}
 	
-	document.getElementById('report').innerHTML = 'Points: ' + N + ', generation: ' + Gen + '/' + Max_Gen + ', best: ' + Opt.toFixed(2);
+	document.getElementById('report').innerHTML = 'Points: ' + N + ', generation: '
+		+ Gen + '/' + Max_Gen + ', best: ' + Opt.toFixed(2);
 }
 
 function circle(p)
