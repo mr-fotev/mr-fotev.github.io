@@ -1,0 +1,154 @@
+<html>
+<title>TSP GA</title>
+<script>
+function init()
+{
+	c = document.getElementById("canvas");
+	ctx = c.getContext("2d");
+	cW = canvas.width;
+	cH = canvas.height;
+	
+	N = 32;
+	M = Math.floor(N/2);
+	P = 1000;
+	Max_Gen = 1000;
+	Gen = 0;
+	
+	data = [];
+	for (var i = 0; i < N; i++) data.push({x: 20 + Math.floor((cW-40)*Math.random()), y: 20 + Math.floor((cH-40)*Math.random())});	
+	
+	B = [];
+	H = {};
+	
+	var x = [];
+	for (var i = 0; i < N; i++) x.push(i);
+
+	for (var i = 0; i < P; i++)
+	{
+		for (var j = 0; j < N - 1; j++)
+		{
+			var u = j + Math.floor((N - j)*Math.random());
+			var t = x[u];
+			x[u] = x[j];
+			x[j] = t;
+		}
+		
+		H[x] = true;
+		B.push({p:x.slice(), v:theta(x)});
+	}
+	
+	B.sort(function(a,b){return a.v - b.v;});	
+	
+	Opt = B[0].v + 1;
+	
+	setInterval(draw, 50);
+}
+
+function dist(i,j)
+{
+	var dx = data[i].x - data[j].x;
+	var dy = data[i].y - data[j].y;
+	return Math.sqrt(dx*dx + dy*dy);
+}
+
+function theta(x)
+{
+	var s = dist(x[0], x[N - 1]);
+	for (var i = 1; i < N; i++) s += dist(x[i], x[i - 1]);
+	return s;
+}
+
+function cross(a,b)
+{
+	var x = a.slice(Math.floor(M*Math.random()), M);
+	x = x.concat(b.filter(function(z){return x.indexOf(z) == -1;}));
+	
+	if (Math.random() < 0.85)
+	for (var i = Math.floor(N*Math.random()), j = Math.floor((N-i)*Math.random()); i < j;)
+	{
+		var t = x[i];
+		x[i++] = x[j];
+		x[j--] = t;
+	}
+	return x;
+}
+
+function roulette(s)
+{
+	var v = Math.random() * s;	
+
+	for (var i = P - 1; i >= 0; i--)
+	{
+		v -= B[i].v;	
+		if (v <= 0) return i;
+	}
+
+	return 0;
+}
+
+function draw()
+{
+	if (Gen >= Max_Gen) return;
+	
+	Gen++;
+	
+	var s = 0;
+	for (var i = 0; i < P; i++) s += B[i].v;
+	
+	for (var i = 0; i < P; i++)
+	{
+		var x = cross(B[roulette(s)].p,B[roulette(s)].p);
+		
+		if (!(x in H) || !H[x])
+		{
+			B.push({p:x, v:theta(x)});
+			H[x] = true;
+		}
+	}
+	
+	B.sort(function(a,b){return a.v - b.v;});
+	
+	for (var i = P; i < B.length; i++) H[B[i].p] = false;
+	
+	B = B.slice(0,P);
+	
+	if (Opt > B[0].v)
+	{
+		Opt = B[0].v;
+		ctx.clearRect(0, 0, cW, cH);
+		for (var j = 0; j < N; j++) circle(B[0].p[j]);
+		lines(B[0].p);
+	}
+	
+	document.getElementById('report').innerHTML = 'Points: ' + N + ', generation: ' + Gen + '/' + Max_Gen + ', best: ' + Opt.toFixed(2);
+}
+
+function circle(p)
+{
+	ctx.fillStyle = '#A000A0';
+	ctx.beginPath();
+	ctx.arc(data[p].x, data[p].y, 6, 0, Math.PI*2, true);
+	ctx.closePath();
+	ctx.fill();
+}
+
+function lines(x)
+{
+	ctx.strokeStyle = '#D000D0';
+	ctx.lineWidth = 1;
+	ctx.beginPath();
+
+	ctx.moveTo(data[x[0]].x, data[x[0]].y);
+	for (var i = 1; i < N; i++) ctx.lineTo(data[x[i]].x, data[x[i]].y);
+	ctx.lineTo(data[x[0]].x, data[x[0]].y);
+	ctx.stroke();
+	ctx.closePath();
+}
+</script>
+<body onload="init()">
+<canvas id="canvas" width="1000" height="600" style="border:1px solid #000000;"></canvas><br>
+<div id="report"></div>
+<span style="margin-left:600px;"><em>This page is Inspired By Rosen Rachev...
+<a style="text-decoration:none;" href="http://toshle.github.io/ai/gen.html">Github link</a></em></span>
+</body>
+</html>
