@@ -1,0 +1,95 @@
+﻿<html>
+<head>
+<meta charset="utf-8"/>
+<title>LightsOut</title>
+
+<link rel="shortcut icon" href="icon.ico">
+<link rel="stylesheet" type="text/css" href="index.css">
+
+<script src="shaders.js"></script>
+<script src="webgl-fmi.js"></script>
+<script src="game.js"></script>
+<script>
+function start()
+{
+	var	canvas = document.getElementById('cvs');
+	canvas.addEventListener('webglcontextlost',function(event){event.preventDefault();},false);
+	canvas.addEventListener('webglcontextrestored',init,false);
+	
+	canvas.onselectstart = function () { return false; }
+	
+	canvas.onclick = function (event)
+	{
+		if (event.which == 1)
+		{
+			var mX = getX(event)+Math.round(gl.canvas.width/2);
+			var mY = getY(event)+Math.round(gl.canvas.height/2);
+			
+			var tI = Math.floor(mX/73);
+			var tJ = Math.floor(mY/73);
+			
+			// R = 35 px, Dist = 3.5 px
+			var posI = tI * 73.5 + 35;
+			var posJ = tJ * 73.5 + 35;
+			
+			if (event.which == 1 && (mX - posI)*(mX - posI) + (mY - posJ)*(mY - posJ) <= 35*35) GAME.click(tI, tJ, true);
+		}
+	}
+	
+	init();
+	drawFrame();
+}
+
+function init()
+{
+	gl = getContext("cvs");
+	glprog = getProgram(vShader,fShader);
+	getVariables();
+
+	gl.enable(gl.DEPTH_TEST);
+	gl.clearColor(0.9,1,0.9,1);
+
+	identity();
+	perspective(30,gl.canvas.width/gl.canvas.height,1,40000);
+	gl.uniform1i(uUseNormalMatrix,false);
+
+	gl.uniform3f(uAmbientColor,0,0,0);
+	gl.uniform3f(uDiffuseColor,1,1,1);
+	gl.uniform3f(uLightDir,0,0,-1);
+
+	GLOBAL_DOT = new CanonicalDot(32);
+	GAME = new Game(7);
+}
+
+function drawFrame()
+{
+	lookAt([4.2,4.2,19],[4.2,4.2,0],[0,1,0]);
+
+	gl.clearColor(1,1,1,1);
+	gl.clear(gl.COLOR_BUFFER_BIT+gl.DEPTH_BUFFER_BIT);
+
+	GAME.draw();
+	
+	if (GAME.win())
+	{
+		alert('Not bad, not bad!');
+		GAME = new Game(7);
+	}
+	
+	requestAnimationFrame(drawFrame);
+}
+
+function help()
+{
+	alert('Clicking any of the dots will toggle it and the adjacent dots. The goal is to make all dots the same color!');
+}
+</script>
+</head>
+<body onload="start()">
+<canvas id="cvs" width="511" height="511"></canvas>
+<br>
+<button class = "button" onclick="GAME = new Game(7);">new</button>
+<button class = "button" onclick="GAME.solve()">solve</button>
+<button class = "button" onclick="help();">help</button>
+</body>
+</html>
