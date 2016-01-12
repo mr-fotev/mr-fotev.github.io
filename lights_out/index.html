@@ -25,14 +25,14 @@ function start()
 			var mX = getX(event)+Math.round(gl.canvas.width/2);
 			var mY = getY(event)+Math.round(gl.canvas.height/2);
 			
-			var tI = Math.floor(mX/73);
-			var tJ = Math.floor(mY/73);
+			var tI = Math.floor(mX/65);
+			var tJ = Math.floor(mY/65);
 			
-			// R = 35 px, Dist = 3.5 px
-			var posI = tI * 73.5 + 35;
-			var posJ = tJ * 73.5 + 35;
+			// R = 30 px, Dist = 6 px
+			var posI = tI * 66 + 30;
+			var posJ = tJ * 66 + 30;
 			
-			if (event.which == 1 && (mX - posI)*(mX - posI) + (mY - posJ)*(mY - posJ) <= 35*35) GAME.click(tI, tJ, true);
+			if (event.which == 1 && (mX - posI)*(mX - posI) + (mY - posJ)*(mY - posJ) <= 30*30) GAME.click(tI, tJ, true);
 		}
 	}
 	
@@ -70,26 +70,40 @@ function drawFrame()
 
 	GAME.draw();
 	
-	if (GAME.win())
-	{
-		alert('Not bad, not bad!');
-		GAME = new Game(7);
-	}
+	if (GAME.win()) document.getElementById('info').innerHTML = 'Not bad! You can start a new game!';
 	
 	requestAnimationFrame(drawFrame);
 }
 
 function help()
 {
-	alert('Clicking any of the dots will toggle it and the adjacent dots. The goal is to make all dots the same color!');
+	document.getElementById('info').innerHTML =
+		'Clicking any of the dots will toggle it and the adjacent dots. The goal is to make all dots the same color!';
 }
+
+function solve()
+{
+	var slv = GAME.solve();
+	document.getElementById('info').innerHTML = slv;
+}
+
+function start_game()
+{
+	GAME = new Game(7);
+	document.getElementById('info').innerHTML = '';
+	
+	document.getElementById('bhelp').disabled = false;
+	document.getElementById('bsolve').disabled = false;
+}
+
 </script>
 </head>
 <body onload="start()">
-<canvas id="cvs" width="511" height="511"></canvas>
+<canvas id="cvs" width="455" height="455"></canvas>
 <br>
-<button class = "button" onclick="GAME = new Game(7);">new</button>
-<button class = "button" onclick="GAME.solve()">solve</button>
-<button class = "button" onclick="help();">help</button>
+<p id="info"></p>
+<button class="button" onclick="start_game()">new</button>
+<button class="button" onclick="solve()">solve</button>
+<button class="button" onclick="help()">help</button>
 </body>
 </html>
