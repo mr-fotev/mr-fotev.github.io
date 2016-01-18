@@ -36,12 +36,6 @@ select
 {
 	height: 90%;
 	width: 80%;
-	margin: 0 auto 0 auto;
-}
-
-#userData
-{
-	display: none;
 }
 
 #someText
