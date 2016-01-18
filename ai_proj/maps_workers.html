@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Simple Map</title>
+<meta name="viewport" content="initial-scale=1.0">
+<meta charset="utf-8">
+<link rel="stylesheet" type="text/css" href="style.css">
+</head>
+<body>
+<div id="someText">
+	<div id="routeOptions">
+		<p>How to use this map:<br>
+			1. Choose the route type<br>
+			<select id="mode">
+				<option value="driving">Driving</option>
+				<option value="walking">Walking</option>
+			</select><br>
+			<br>
+			2. Choose the places you want to visit<br>
+			<button class="button" onclick="getDistances()">Done</button><br>
+			<div id="info"></div>
+			<br>
+			3. Choose the color of your route<br>
+			<select id="color">
+				<option value="0">Blue</option>
+				<option value="1">Green</option>
+				<option value="2">Yellow</option>
+				<option value="3">Red</option>
+			</select><br>
+			<br>
+			4. Let's draw your route<br>
+			<button class="button" onclick="compute_route()">Route</button><br>
+			<br>
+			<img src="loading.gif" id="loading">
+			<br><br>
+			<div id="time">Time in H:</div>
+			<div id="dist">Dist in Km:</div>
+		</p>
+		<br>
+	</div>
+	<div id="clear">
+		<button class="button" onclick="cclear()">Clear Routes</button>
+		<button class="button" onclick="mclear()">Clear Markers</button>
+	</div>
+</div>
+<div id="map"></div>
+
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDaF0vngh3IXyxU8KLiytmwdyV2JWL9r5I&callback=initMap" async defer></script>
+<script src="tsp_ga.js"></script>
+<script>
+var map;
+var Markers;
+
+var Dist;
+var Time;
+
+var Tm;
+var Ds;
+
+var Renders;
+
+var worker;
+
+function initMap()
+{
+	map = new google.maps.Map(document.getElementById('map'),
+	{
+		center: {lat: 42.63667, lng: 25.38035},
+		zoom: 7
+	});
+	
+	Markers = [];
+	
+	Renders = [];
+		
+	map.addListener('click', function(e)
+	{
+		var marker = new google.maps.Marker(
+		{
+			position: e.latLng,
+			map: map,
+			draggable: true,
+			animation: google.maps.Animation.DROP
+		});
+		
+		marker.setMap(map);
+		
+		Markers.push(marker);
+		
+		marker.addListener('rightclick', function()
+		{
+			var ind = Markers.indexOf(this);
+			Markers.splice(ind,1);
+			
+			this.setMap(null);
+		});		
+	});
+	
+	worker = new Worker("tsp_ga.js");
+ 
+	worker.onmessage = function(e) 
+	{
+		var wrk = e.target, workerResults = e.data;
+		
+		document.getElementById('loading').style.visibility = 'hidden';
+		
+		show_opt(workerResults.p);
+		
+		wrk.idle = true;
+	}
+	
+	worker.idle = true;
+}
+
+function getDistances()
+{
+	var n = Markers.length;
+	
+	Dist = [];
+	
+	Time = [];
+	
+	var u = Markers.map(x => x.position);
+	
+	var d = Math.floor(100/n);
+	if (d == 100/n) d -= 1;
+	var l = Math.ceil(n/d);
+	
+	var service = new google.maps.DistanceMatrixService;
+	var v = document.getElementById('mode').value;
+	var mode = v == 'driving' ? google.maps.TravelMode.DRIVING : google.maps.TravelMode.WALKING;
+	
+	var info = document.getElementById('info');
+	
+	function query(k, s)
+	{
+		setTimeout(function()
+		{
+			var v = u.slice(k, k+d);
+			
+			service.getDistanceMatrix(
+			{
+				origins: v,
+				destinations: u,
+				travelMode: mode,
+				unitSystem: google.maps.UnitSystem.METRIC,
+				avoidHighways: false,
+				avoidTolls: false
+			}, function(response, status)
+			{
+				if (status !== google.maps.DistanceMatrixStatus.OK) alert('Error was: ' + status);
+				else
+				{
+					var s = response.originAddresses.length;
+					
+					var D = new Array(n);
+					var T = new Array(n);
+					
+					for (var i = 0; i < s; i++)
+					{
+						var results = response.rows[i].elements;
+						for (var j = 0; j < results.length; j++)
+						{
+							D[j] = results[j].distance.value / 1000;
+							T[j] = results[j].duration.value;
+						}
+						Dist.push(D.slice());
+						Time.push(T.slice());
+					}
+				}
+			});
+			
+			info.innerHTML = 'Part ' + (s+1) + ' of ' + l + ' fetched';
+			
+		}, 10000*s);
+	}
+
+	for (var k = 0, s = 0; k < n; k+=d, s++) query(k,s);
+}
+
+function compute_route()
+{
+	if (!Dist) alert('Please, select locations and click done!')
+	else
+	{
+		document.getElementById('loading').style.visibility = 'visible';
+		document.getElementById('info').innerHTML = '';
+	
+		worker.idle = false;
+		worker.postMessage({dist: Dist});
+	}
+}
+
+// opt is a permutation of the cities
+function show_opt(opt)
+{
+	var u = document.getElementById('color').value;
+	var v = document.getElementById('mode').value;
+	
+	var color = u == '0' ? 'blue': (u == '1' ? 'green' : (u == '2' ? 'yellow':'red'));
+	var mode = v == 'driving' ? google.maps.TravelMode.DRIVING:google.maps.TravelMode.WALKING;
+	
+	Tm = 0;
+	Ds = 0;
+	
+	var u = document.getElementById('time');
+	var v = document.getElementById('dist');
+	
+	function query(k)
+	{
+		setTimeout(function()
+		{
+			displayRoute(opt[k-1],opt[k],color,mode);
+			Tm += Time[k-1][k] / 3600;
+			Ds += Dist[k-1][k];
+			
+			u.innerHTML = 'Time in H: ' + Tm.toFixed(4);
+			v.innerHTML = 'Dist in Km: ' + Ds.toFixed(4);
+			
+		}, 1000 * k);
+	}
+	
+	var s = opt.length;
+	for (var i = 1; i < s; i++) query(i);
+	
+	displayRoute(opt[s-1],opt[0],color,mode);
+	Tm += Time[s-1][0] / 3600;
+	Ds += Dist[s-1][0];
+	
+	u.innerHTML = 'Time in H: ' + Tm.toFixed(4);
+	v.innerHTML = 'Dist in Km: ' + Ds.toFixed(4);
+}
+
+// display route between marker i and marker j
+function displayRoute(i,j,color,mode)
+{
+    var start = Markers[i].position;
+    var end = Markers[j].position;
+
+    var directionsDisplay = new google.maps.DirectionsRenderer({polylineOptions: { strokeColor: color}});
+    directionsDisplay.setMap(map);
+	directionsDisplay.setOptions( { suppressMarkers: true } );
+	Renders.push(directionsDisplay);
+	
+    var request = {
+        origin: start,
+        destination: end,
+        travelMode: mode
+    };
+	
+    var directionsService = new google.maps.DirectionsService(); 
+    directionsService.route(request, function(response, status) {
+        if (status == google.maps.DirectionsStatus.OK) {
+            directionsDisplay.setDirections(response);
+        }
+    });
+}
+
+function cclear()
+{
+	for (var i = 0; i < Renders.length; i++) Renders[i].setMap(null);
+	Renders = [];
+}
+
+function mclear()
+{
+	for (var i = 0; i < Markers.length; i++) Markers[i].setMap(null);
+	Markers = [];
+}
+
+</script>
+</body>
+</html>
