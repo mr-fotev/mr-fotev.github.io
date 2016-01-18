@@ -45,7 +45,7 @@
 </div>
 <div id="map"></div>
 
-<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDaF0vngh3IXyxU8KLiytmwdyV2JWL9r5I&callback=initMap" async defer></script>
+<script src="https://maps.googleapis.com/maps/api/js"></script>
 <script src="tsp_ga.js"></script>
 <script>
 var map;
@@ -60,6 +60,8 @@ var Ds;
 var Renders;
 
 var worker;
+
+google.maps.event.addDomListener(window, 'load', initMap);
 
 function initMap()
 {
@@ -269,5 +271,5 @@ function mclear()
 }
 
 </script>
-</body>
+</body onload="initMap()">
 </html>
