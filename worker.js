@@ -79,7 +79,7 @@ function computeRow(task)
 	return task;
 }
  
-onmessage = function (task)
+onmessage = function(task)
 {
 	var workerResult = computeRow(task.data);
 	postMessage(workerResult);
