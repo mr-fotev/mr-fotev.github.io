@@ -8,8 +8,15 @@ p
 	text-align: left;
 }
 
+div
+{
+	font-family: Verdana;
+	font-size: 14px;
+}
+
 select
 {
+	font-family: Verdana;
 	margin-top: 10px;
 	margin-left: 20px;
 	width: 110px;
