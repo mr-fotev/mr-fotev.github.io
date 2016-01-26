@@ -126,7 +126,7 @@ function getDistances()
 	var u = Markers.map(x => x.position);
 	
 	var d = Math.floor(100/n);
-	if (d == 100/n) d -= 1;
+	//if (d == 100/n) d -= 1;
 	var l = Math.ceil(n/d);
 	
 	var service = new google.maps.DistanceMatrixService;
@@ -206,8 +206,8 @@ function show_opt(opt)
 	Tm = 0;
 	Ds = 0;
 	
-	var u = document.getElementById('time');
-	var v = document.getElementById('dist');
+	u = document.getElementById('time');
+	v = document.getElementById('dist');
 	
 	function query(k)
 	{
