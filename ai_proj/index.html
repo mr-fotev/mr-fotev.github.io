@@ -126,7 +126,7 @@ function getDistances()
 	var u = Markers.map(x => x.position);
 	
 	var d = Math.floor(100/n);
-	//if (d == 100/n) d -= 1;
+	if (n > 19) d--;
 	var l = Math.ceil(n/d);
 	
 	var service = new google.maps.DistanceMatrixService;
@@ -178,7 +178,7 @@ function getDistances()
 		}, 10000*s);
 	}
 
-	for (var k = 0, s = 0; k < n; k+=d, s++) query(k,s);
+	for (var k = 0, s = 0; k < n; k += d, s++) query(k,s);
 }
 
 function compute_route()
