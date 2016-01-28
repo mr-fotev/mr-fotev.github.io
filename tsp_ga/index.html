@@ -69,13 +69,26 @@ function cross(a,b)
 	var x = a.slice(Math.floor(M*Math.random()), M);
 	x = x.concat(b.filter(function(z){return x.indexOf(z) == -1;}));
 	
-	if (Math.random() < 0.85)
-	for (var i = Math.floor(N*Math.random()), j = Math.floor((N-i)*Math.random()); i < j;)
+	if (Math.random() < 0.25)
 	{
-		var t = x[i];
-		x[i++] = x[j];
-		x[j--] = t;
+		var ia = Math.floor(N*Math.random()), ib = Math.floor(N*Math.random());
+		while (ia == ib) ib = Math.floor(N*Math.random());
+		
+		if (ia > ib)
+		{
+			var t = ia;
+			ia = ib;
+			ib = t;
+		}
+		
+		for (var i = ia, j = ib; i < j;)
+		{
+			var t = x[i];
+			x[i++] = x[j];
+			x[j--] = t;
+		}
 	}
+	
 	return x;
 }
 
@@ -84,7 +97,7 @@ function roulette(s)
 {
 	var v = Math.random() * s;	
 
-	for (var i = 0; i < P; i++)
+	for (var i = P - 1; i >= 0; i--)
 	{
 		v -= B[i].v;
 		if (v <= 0) return P - 1 - i;
