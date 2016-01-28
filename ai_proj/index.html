@@ -123,7 +123,7 @@ function getDistances()
 	
 	Time = [];
 	
-	var u = Markers.map(x => x.position);
+	var u = Markers.map(function(x){return x.position;});
 	
 	var d = Math.floor(100/n);
 	if (n > 19) d--;
