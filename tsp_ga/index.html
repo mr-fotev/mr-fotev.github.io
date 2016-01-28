@@ -79,17 +79,18 @@ function cross(a,b)
 	return x;
 }
 
+// roulette wheel-inspired selection
 function roulette(s)
 {
 	var v = Math.random() * s;	
 
-	for (var i = P - 1; i >= 0; i--)
+	for (var i = 0; i < P; i++)
 	{
-		v -= B[i].v;	
-		if (v <= 0) return i;
+		v -= B[i].v;
+		if (v <= 0) return P - 1 - i;
 	}
 
-	return 0;
+	return P - 1;
 }
 
 function draw()
