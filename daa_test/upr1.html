@@ -1,0 +1,72 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+<title>MathJax test</title>
+<style type="text/css">
+html
+{
+	font-family: 'Computer Modern Serif';
+	font-size: 15px;
+}
+h2
+{
+	text-align: center;
+	width: 800px;
+}
+#cont
+{
+	width: 800px;
+	margin: 0 auto;
+}
+.math
+{
+	width: 800px;
+	text-align: center;
+}
+</style>
+<link rel="stylesheet" href="Serif/cmun-serif.css"></link>
+<script type="text/x-mathjax-config">
+	MathJax.Hub.Config({tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}});
+</script>
+<script type="text/javascript" async src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS_CHTML">
+</script>
+</head>
+<body>
+<div id="cont">
+<h2>Упражнение 1: Асимптотични нотации</h2><br>
+<p>
+<b>Def:</b> Ще казваме, че функцията \(f: \mathbb{R}^+ \rightarrow \mathbb{R}\) е <i>асимптотично неотрицателна</i>, ако:
+$$\exists n_0 \in \mathbb{N} \enspace \forall n \geq n_0 : f(n) \geq 0$$
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Ако неравенството е строго, ще казваме,
+че \(f\) е <i>асимптотично положителна</i>.<br><br>
+<b>Def:</b> Въвеждаме следните класове от функции относно асимтотично неотрицателната \(f\). Ще ги наричаме <i>асимптотични нотации</i>:
+$$O(f) = \{ g \, | \, \exists c > 0 \enspace \exists n_0 \in \mathbb{N} \enspace \forall n \geq n_0 : 0 \leq g(n) \leq c.f(n)\}$$
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Неформално \(O(f)\) представлява класът на всички функции, които растят
+асимптотично <i>не по-бързо</i> от \(f\). Ще отбелязваме това чрез \(g \in O(f)\), \(g = O(f)\) или \(g \preceq f\).
+
+$$o(f) = \{ g \, | \, \forall c > 0 \enspace \exists n_0 \in \mathbb{N} \enspace \forall n \geq n_0 : 0 \leq g(n) \lt c.f(n)\}$$
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Неформално \(o(f)\) представлява класът на всички функции, които растят
+асимптотично <i>по-бавно</i> от \(f\). Ще отбелязваме това чрез \(g \in o(f)\), \(g = o(f)\) или \(g \prec f\).
+
+$$\Omega(f) = \{ g \, | \, \exists c > 0 \enspace \exists n_0 \in \mathbb{N} \enspace \forall n \geq n_0 : 0 \leq c.f(n) \leq g(n)\}$$
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Неформално \(\Omega(f)\) представлява класът на всички функции, които растят
+асимптотично <i>не по-бавно</i> от \(f\). Ще отбелязваме това чрез \(g \in \Omega(f)\), \(g = \Omega(f)\) или \(g \succeq f\).
+
+$$\omega(f) = \{ g \, | \, \forall c > 0 \enspace \exists n_0 \in \mathbb{N} \enspace \forall n \geq n_0 : 0 \leq c.f(n) \lt g(n)\}$$
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Неформално \(\omega(f)\) представлява класът на всички функции, които растят
+асимптотично <i>по-бързо</i> от \(f\). Ще отбелязваме това чрез \(g \in \omega(f)\), \(g = \omega(f)\) или \(g \succ f\).
+
+$$\Theta(f) = \{ g \, | \, \exists c_1 \gt 0, \, c_2 \gt 0 \enspace \exists n_0 \in \mathbb{N} \enspace \forall n \geq n_0 : 
+0 \leq c_1.f(n) \leq g(n) \leq c_2.f(n)\}$$
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Неформално \(\Theta(f)\) представлява класът на всички функции, които растят
+асимптотично <i>еднакво</i> с \(f\). Ще отбелязваме това чрез \(g \in \Theta(f)\), \(g = \Theta(f)\) или \(g \asymp f\).
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</p>
+</div>
+</body>
+</html>
