@@ -1,0 +1,142 @@
+<html style="text-align: center;">
+<head>
+<title>Fibonacci Numbers</title>
+</head>
+<script>
+function mult(a,b)
+{
+	var n = a.length, m = b.length;
+	var res = new Array(n + m);
+	res.fill(0);
+	
+	for (var i = 0; i < n ; i++)
+	{
+		var c = 0;
+		for (var j = 0; j < m ;j++)
+		{
+			res[i+j] += c + b[j]*a[i];
+			c = Math.floor(res[i+j] / 10);
+			res[i+j] = res[i+j] % 10;
+		}
+		res[i+m] += c;
+	}
+	
+	if (res[n + m - 1] == 0) res.pop();
+
+	return res;
+}
+
+function sum(a,b)
+{
+	var n = a.length, m = b.length;
+	var res = new Array(n + 1);
+	
+	var c = 0;
+	
+	for (var i = 0; i < m; i++)
+	{
+		res[i] = c + a[i] + b[i];
+		if (res[i] > 9)
+		{	
+			c = 1;
+			res[i] -= 10;
+		}
+		else c = 0;
+	}
+	
+	for (var i = m; i < n; i++)
+	{
+		res[i] = c + a[i];
+		if (res[i] > 9)
+		{	
+			c = 1;
+			res[i] -= 10;
+		}
+		else c = 0;
+	}
+	
+	res[n] = c;
+	if (res[n] == 0) res.pop();
+	
+	return res;
+}
+
+function substr(a,b)
+{
+	var n = a.length, m = b.length;
+	var res = new Array(n);
+	
+	var c = 0;
+	
+	for (var i = 0; i < m; i++)
+	{
+		res[i] = a[i] - b[i] - c;
+		if (res[i] < 0)
+		{	
+			c = 1;
+			res[i] += 10;
+		}
+		else c = 0;
+	}
+	
+	for (var i = m; i < n; i++)
+	{
+		res[i] = a[i] - c;
+		if (res[i] < 0)
+		{	
+			c = 1;
+			res[i] += 10;
+		}
+		else c = 0;
+	}
+	
+	while (res[res.length - 1] == 0 && res.length > 1) res.pop();
+	return res;
+}
+
+function ffd()
+{
+	var n = document.getElementById('textBox1').value;
+	if (!/^[0-9]*$/.test(n) || parseInt(n) > 900000)
+	{
+		document.getElementById('ta1').innerHTML = 'Bad input or number is too big!';
+		return;
+	}
+	n = parseInt(n);
+	
+	var time_st = Date.now();
+	var mask = [];
+	for (var i = n; i > 0; i >>= 1) mask.push(i & 1);
+	
+	var a = [0];
+	var b = [1];
+	var t;
+	
+	for (var i = mask.length - 1; i >= 0; i--)
+	{
+		t = mult(a, substr(mult(b,[2]),a));
+		b = sum(mult(b,b),mult(a,a));
+		a = t.slice();
+	
+		if (mask[i] == 1)
+		{
+			t = sum(b,a);
+			a = b.slice();
+			b = t.slice();
+		}
+	}
+
+	document.getElementById('textBox2').value=(Date.now() - time_st) + ' ms';
+	document.getElementById('ta1').innerHTML = a.reverse().join('');
+}
+
+</script>
+<body onkeydown="if (event.keyCode == 13) ffd();">
+<textarea rows="20" cols="100" id="ta1"></textarea>
+<br><br>
+<input type="submit" style="margin-right: 20px;" value="Get Fibonacci number" onclick="ffd()">
+<input type="text" style="margin-right: 20px;" id="textBox1">
+<input type="text" style="margin-right: 20px;" id="textBox2">
+</body>
+
+</html>
