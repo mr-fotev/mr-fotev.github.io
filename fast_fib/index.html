@@ -3,6 +3,7 @@
 <title>Fibonacci Numbers</title>
 </head>
 <script>
+// long multiplication 
 function mult(a,b)
 {
 	var n = a.length, m = b.length;
@@ -26,78 +27,96 @@ function mult(a,b)
 	return res;
 }
 
+// a is larger and stores the result
 function sum(a,b)
 {
 	var n = a.length, m = b.length;
-	var res = new Array(n + 1);
-	
 	var c = 0;
 	
 	for (var i = 0; i < m; i++)
 	{
-		res[i] = c + a[i] + b[i];
-		if (res[i] > 9)
+		a[i] = c + a[i] + b[i];
+		if (a[i] > 9)
 		{	
 			c = 1;
-			res[i] -= 10;
+			a[i] -= 10;
 		}
 		else c = 0;
 	}
 	
 	for (var i = m; i < n; i++)
 	{
-		res[i] = c + a[i];
-		if (res[i] > 9)
+		a[i] = c + a[i];
+		if (a[i] > 9)
 		{	
 			c = 1;
-			res[i] -= 10;
+			a[i] -= 10;
 		}
 		else c = 0;
 	}
 	
-	res[n] = c;
-	if (res[n] == 0) res.pop();
+	if (c != 0) a.push(c);
 	
-	return res;
+	return a;
 }
 
+// a is larger and stores the result
 function substr(a,b)
 {
 	var n = a.length, m = b.length;
-	var res = new Array(n);
-	
 	var c = 0;
 	
 	for (var i = 0; i < m; i++)
 	{
-		res[i] = a[i] - b[i] - c;
-		if (res[i] < 0)
+		a[i] = a[i] - b[i] - c;
+		if (a[i] < 0)
 		{	
 			c = 1;
-			res[i] += 10;
+			a[i] += 10;
 		}
 		else c = 0;
 	}
 	
 	for (var i = m; i < n; i++)
 	{
-		res[i] = a[i] - c;
-		if (res[i] < 0)
+		a[i] = a[i] - c;
+		if (a[i] < 0)
 		{	
 			c = 1;
-			res[i] += 10;
+			a[i] += 10;
 		}
 		else c = 0;
 	}
 	
-	while (res[res.length - 1] == 0 && res.length > 1) res.pop();
-	return res;
+	while (a[a.length - 1] == 0 && a.length > 1) a.pop();
+	return a;
+}
+
+function karat(a,b)
+{
+	var n = Math.floor(Math.min(a.length, b.length) / 2);
+
+	if (n < 1000) return mult(a,b);
+
+	var nulls = new Array(n);
+	nulls.fill(0);
+	
+	var a0 = a.slice(0, n), a1 = a.slice(n, a.length), b0 = b.slice(0, n), b1 = b.slice(n, b.length);
+
+	var z0 = karat(a0, b0);
+	var z2 = karat(a1, b1);
+	var z1 = substr(substr(karat(sum(a1, a0), sum(b1,b0)), z2),z0);
+	
+	z2 = nulls.concat(nulls.concat(z2));
+	z1 = nulls.concat(z1);
+	
+	return sum(sum(z2, z1), z0);
 }
 
 function ffd()
 {
 	var n = document.getElementById('textBox1').value;
-	if (!/^[0-9]*$/.test(n) || parseInt(n) > 900000)
+	if (!/^[0-9]*$/.test(n) || parseInt(n) > 500000)
 	{
 		document.getElementById('ta1').innerHTML = 'Bad input or number is too big!';
 		return;
@@ -114,15 +133,15 @@ function ffd()
 	
 	for (var i = mask.length - 1; i >= 0; i--)
 	{
-		t = mult(a, substr(mult(b,[2]),a));
-		b = sum(mult(b,b),mult(a,a));
+		t = karat(a, substr(karat(b,[2]),a));
+		b = sum(karat(b,b), karat(a,a));
 		a = t.slice();
 	
 		if (mask[i] == 1)
 		{
-			t = sum(b,a);
-			a = b.slice();
-			b = t.slice();
+			t = b.slice();
+			b = sum(b,a);
+			a = t.slice();
 		}
 	}
 
@@ -131,12 +150,15 @@ function ffd()
 }
 
 </script>
-<body onkeydown="if (event.keyCode == 13) ffd();">
-<textarea rows="20" cols="100" id="ta1"></textarea>
+<body onkeydown="if (event.keyCode == 13) ffd();" style="font-family: Verdana;">
+<h3> Fast Fibonacci Numbers</h3>
+<p>Well, it's not that fast, but at least it's something!...
+<a href = "https://github.com/mr-fotev/mr-fotev.github.io/blob/master/fast_fib/index.html">view source</a></p>
+<textarea rows="26" cols="120" id="ta1" style="font-family: Verdana;"></textarea>
 <br><br>
-<input type="submit" style="margin-right: 20px;" value="Get Fibonacci number" onclick="ffd()">
-<input type="text" style="margin-right: 20px;" id="textBox1">
-<input type="text" style="margin-right: 20px;" id="textBox2">
+<input type="submit" style="margin-right: 20px; font-family: Verdana;" value="Get Fibonacci number" onclick="ffd()">
+<input type="text" style="margin-right: 20px; font-family: Verdana;" id="textBox1">
+<input type="text" style="margin-right: 20px; font-family: Verdana;" id="textBox2">
 </body>
 
 </html>
