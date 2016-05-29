@@ -1,0 +1,174 @@
+<html style="text-align: center;">
+<head>
+<title>Fibonacci Numbers</title>
+</head>
+<script>
+var B = 10000;
+
+// a is larger and stores the result
+function sum(a, b)
+{
+	var n = a.length, m = b.length;
+	
+	if (n < m) return sum(b, a);
+	
+	var c = 0;
+	
+	for (var i = 0; i < m; i++)
+	{
+		a[i] = c + a[i] + b[i];
+		if (a[i] > B)
+		{	
+			c = 1;
+			a[i] -= B;
+		}
+		else c = 0;
+	}
+	
+	for (var i = m; i < n; i++)
+	{
+		a[i] = c + a[i];
+		if (a[i] > B)
+		{	
+			c = 1;
+			a[i] -= B;
+		}
+		else c = 0;
+	}
+	
+	if (c != 0) a.push(c);
+	
+	return a;
+}
+
+// a is larger and stores the result
+function substr(a,b)
+{
+	var n = a.length, m = b.length;
+	var c = 0;
+	
+	for (var i = 0; i < m; i++)
+	{
+		a[i] = a[i] - b[i] - c;
+		if (a[i] < 0)
+		{	
+			c = 1;
+			a[i] += B;
+		}
+		else c = 0;
+	}
+	
+	for (var i = m; i < n; i++)
+	{
+		a[i] = a[i] - c;
+		if (a[i] < 0)
+		{	
+			c = 1;
+			a[i] += B;
+		}
+		else c = 0;
+	}
+	
+	while (a[a.length - 1] == 0 && a.length > 1) a.pop();
+	return a;
+}
+
+// two workers and results
+var Ws = new Array(2);
+var WRes = new Array(2);
+
+var Mask;
+var Ind;
+var a, b, t, F;
+var Time_st;
+
+function init()
+{
+	for (var i = 0; i < 2; i++)
+	{
+		var w = new Worker('worker.js');
+		w.ind = i;
+		
+		w.onmessage = function(e)
+		{
+			var worker = e.target;
+			WRes[worker.ind] = e.data.res;
+			worker.idle = true;
+			
+			for (var i = 0; i < 2; i++) if (Ws[i].idle == false) return;
+			
+			T = F ? sum(WRes[1].slice(),[1]):substr(WRes[1].slice(),[1]);
+			
+			b = sum(sum(T,WRes[0]),WRes[0]);
+			a = substr(sum(WRes[1], WRes[1]), WRes[0]);
+		
+			if (Mask[Ind] == 1)
+			{
+				t = b.slice();
+				b = sum(b,a);
+				a = t.slice();
+				F = false;
+			}
+			else F = true;
+			
+			if (Ind == 0)
+			{
+				document.getElementById('textBox2').value=(Date.now() - Time_st) + ' ms';
+				document.getElementById('ta1').innerHTML = a.reverse().join('');
+			}
+			else
+			{
+				Ind--;
+				
+				for (var i = 0; i < 2; i++) Ws[i].idle = false;
+				
+				Ws[0].postMessage({a:a, b:a});
+				Ws[1].postMessage({a:a, b:b});
+			}
+		}
+		
+		w.idle = true;
+		
+		Ws[i] = w;
+	}
+}
+
+function ffd()
+{
+	var n = document.getElementById('textBox1').value;
+	if (!/^[0-9]*$/.test(n) || parseInt(n) > 2000000)
+	{
+		document.getElementById('ta1').innerHTML = 'Bad input or number is too big!';
+		return;
+	}
+	n = parseInt(n);
+	
+	Time_st = Date.now();
+	Mask = [];
+	
+	for (var i = n; i > 0; i >>= 1) Mask.push(i & 1);
+	Ind = Mask.length - 1;
+	
+	a = [0];
+	b = [1];
+	F = true;
+	
+	for (var i = 0; i < 2; i++) Ws[i].idle = false;
+	
+	Ws[0].postMessage({a:a, b:a});
+	Ws[1].postMessage({a:a, b:b});
+}
+
+</script>
+<body onload="init()" onkeydown="if (event.keyCode == 13) ffd();" style="font-family: Verdana; font-size: 14px;">
+<h3> Fast Fibonacci Numbers</h3>
+<p>Well, it's not that fast, but at least it's something!...
+<a href = "https://github.com/mr-fotev/mr-fotev.github.io/blob/master/fast_fib/index.html">view source</a></p>
+<p>Algorithms used: <em>Fibonacci Fast Doubling, Karatsuba multiplication, Base 10<sup>4</sup> long multiplication</em></p>
+<textarea readonly rows="26" cols="120" id="ta1" style="font-family: Verdana;"></textarea>
+<br><br>
+<input type="submit" style="margin-right: 20px; font-family: Verdana;" value="Get Fibonacci number" onclick="ffd()">
+<input type="text" style="margin-right: 20px; font-family: Verdana;" id="textBox1">
+<input type="text" readonly style="margin-right: 20px; font-family: Verdana;" id="textBox2">
+</body>
+</html>
