@@ -98,9 +98,9 @@ function init()
 			
 			for (var i = 0; i < 2; i++) if (Ws[i].idle == false) return;
 			
-			T = F ? sum(WRes[1].slice(),[1]):substr(WRes[1].slice(),[1]);
+			T = F ? sum(WRes[1].slice(), [1]) : substr(WRes[1].slice(), [1]);
 			
-			b = sum(sum(T,WRes[0]),WRes[0]);
+			b = sum(sum(T, WRes[0]), WRes[0]);
 			a = substr(sum(WRes[1], WRes[1]), WRes[0]);
 		
 			if (Mask[Ind] == 1)
@@ -114,7 +114,7 @@ function init()
 			
 			if (Ind == 0)
 			{
-				document.getElementById('textBox2').value=(Date.now() - Time_st) + ' ms';
+				document.getElementById('textBox2').value = (Date.now() - Time_st) + ' ms';
 				document.getElementById('ta1').innerHTML = a.reverse().join('');
 			}
 			else
@@ -147,7 +147,7 @@ function ffd()
 	Time_st = Date.now();
 	Mask = [];
 	
-	for (var i = n; i > 0; i >>= 1) Mask.push(i & 1);
+	if (n == 0) Mask.push(0); else for (var i = n; i > 0; i >>= 1) Mask.push(i & 1);
 	Ind = Mask.length - 1;
 	
 	a = [0];
@@ -170,7 +170,7 @@ function ffd()
 <textarea readonly rows="26" cols="120" id="ta1" style="font-family: Verdana;"></textarea>
 <br><br>
 <input type="submit" style="margin-right: 20px; font-family: Verdana;" value="Get Fibonacci number" onclick="ffd()">
-<input type="text" style="margin-right: 20px; font-family: Verdana;" id="textBox1">
-<input type="text" readonly style="margin-right: 20px; font-family: Verdana;" id="textBox2">
+<label>N = </label><input type="text" style="margin-right: 20px; font-family: Verdana;" id="textBox1">
+<label>Time = </label><input type="text" readonly style="margin-right: 20px; font-family: Verdana;" id="textBox2">
 </body>
 </html>

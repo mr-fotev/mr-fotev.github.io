@@ -1,7 +1,7 @@
 var B = 10000;
 
 // long multiplication 
-function mult(a,b)
+function mult(a, b)
 {
 	var n = a.length, m = b.length;
 	var res = new Array(n + m);
@@ -22,6 +22,7 @@ function mult(a,b)
 	if (res[n + m - 1] == 0) res.pop();
 	return res;
 }
+
 // a is larger and stores the result
 function sum(a, b)
 {
@@ -59,7 +60,7 @@ function sum(a, b)
 }
 
 // a is larger and stores the result
-function substr(a,b)
+function substr(a, b)
 {
 	var n = a.length, m = b.length;
 	var c = 0;
@@ -90,7 +91,7 @@ function substr(a,b)
 	return a;
 }
 
-function karat(a,b)
+function karat(a, b)
 {
 	var n = Math.floor(Math.min(a.length, b.length) / 2);
 	if (n < 20) return mult(a,b);
@@ -105,7 +106,7 @@ function karat(a,b)
 	
 	var z0 = karat(a0, b0);
 	var z2 = karat(a1, b1);
-	var z1 = substr(substr(karat(sum(a1, a0), sum(b1,b0)), z2), z0);
+	var z1 = substr(substr(karat(sum(a1, a0), sum(b1, b0)), z2), z0);
 	
 	z2 = nulls.concat(nulls).concat(z2);
 	z1 = nulls.concat(z1);
