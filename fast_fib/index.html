@@ -126,7 +126,7 @@ function karat(a, b)
 function ffd()
 {
 	var n = document.getElementById('textBox1').value;
-	if (!/^[0-9]*$/.test(n) || parseInt(n) > 2000000)
+	if (!/^[0-9]*$/.test(n) || isNaN(parseInt(n)) || parseInt(n) > 2000000)
 	{
 		document.getElementById('ta1').innerHTML = 'Bad input or number is too big!';
 		return;
