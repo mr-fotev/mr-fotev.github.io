@@ -35,7 +35,7 @@ function sum(a, b)
 	for (var i = 0; i < m; i++)
 	{
 		a[i] = c + a[i] + b[i];
-		if (a[i] > B)
+		if (a[i] >= B)
 		{	
 			c = 1;
 			a[i] -= B;
@@ -46,7 +46,7 @@ function sum(a, b)
 	for (var i = m; i < n; i++)
 	{
 		a[i] = c + a[i];
-		if (a[i] > B)
+		if (a[i] >= B)
 		{	
 			c = 1;
 			a[i] -= B;
