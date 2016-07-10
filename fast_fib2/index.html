@@ -78,9 +78,11 @@ function substr(a,b)
 // to show the number accurately
 function zeta(x)
 {
+	var y = '';
 	x = String(x);
-	while (x.length < Bl) x = '0' + x;
-	return x;
+	
+	for (var i = x.length; i < Bl; i++) y += '0';
+	return y + x;
 }
 
 // two workers and results
