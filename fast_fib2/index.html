@@ -5,6 +5,7 @@
 </head>
 <script>
 var B = 10000;
+var Bl = 4;
 
 // a is larger and stores the result
 function sum(a, b)
@@ -74,6 +75,14 @@ function substr(a,b)
 	return a;
 }
 
+// to show the number accurately
+function zeta(x)
+{
+	x = String(x);
+	while (x.length < Bl) x = '0' + x;
+	return x;
+}
+
 // two workers and results
 var Ws = new Array(2);
 var WRes = new Array(2);
@@ -115,7 +124,8 @@ function init()
 			if (Ind == 0)
 			{
 				document.getElementById('textBox2').value = (Date.now() - Time_st) + ' ms';
-				document.getElementById('ta1').innerHTML = a.reverse().join('');
+				var u = a.pop();
+				document.getElementById('ta1').innerHTML = u + a.reverse().map(zeta).join('');
 			}
 			else
 			{

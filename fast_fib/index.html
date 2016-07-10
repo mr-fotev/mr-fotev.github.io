@@ -5,6 +5,7 @@
 </head>
 <script>
 var B = 10000;
+var Bl = 4;
 
 // long multiplication 
 function mult(a, b)
@@ -123,6 +124,14 @@ function karat(a, b)
 	return sum(sum(z2, z1), z0);
 }
 
+// to show the number accurately
+function zeta(x)
+{
+	x = String(x);
+	while (x.length < Bl) x = '0' + x;
+	return x;
+}
+
 function ffd()
 {
 	var n = document.getElementById('textBox1').value;
@@ -156,7 +165,8 @@ function ffd()
 	}
 
 	document.getElementById('textBox2').value = (Date.now() - time_st) + ' ms';
-	document.getElementById('ta1').innerHTML = a.reverse().join('');
+	var u = a.pop();
+	document.getElementById('ta1').innerHTML = u + a.reverse().map(zeta).join('');
 }
 
 </script>

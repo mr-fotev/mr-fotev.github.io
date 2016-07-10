@@ -108,8 +108,8 @@ function karat(a, b)
 	var z2 = karat(a1, b1);
 	var z1 = substr(substr(karat(sum(a1, a0), sum(b1, b0)), z2), z0);
 	
-	z2 = nulls.concat(nulls).concat(z2);
 	z1 = nulls.concat(z1);
+	z2 = nulls.concat(nulls).concat(z2);
 	
 	return sum(sum(z2, z1), z0);
 }
