@@ -43,7 +43,7 @@ class BinHeap
 public:
 	BinHeap()
 	{
-		heap.push_back(NULL); // unsued delimiter
+		heap.push_back(NULL); // unused delimiter
 		sz = 0;
 	}
 
