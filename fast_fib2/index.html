@@ -91,7 +91,7 @@ var WRes = new Array(2);
 
 var Mask;
 var Ind;
-var a, b, t, F;
+var a, b, t, x, F;
 var Time_st;
 
 function init()
@@ -109,9 +109,9 @@ function init()
 			
 			for (var i = 0; i < 2; i++) if (Ws[i].idle == false) return;
 			
-			t = F ? sum(WRes[1].slice(), [1]) : substr(WRes[1].slice(), [1]);
+			x = F ? sum(WRes[1].slice(), [1]) : substr(WRes[1].slice(), [1]);
 			
-			b = sum(sum(t, WRes[0]), WRes[0]);
+			b = sum(sum(x, WRes[0]), WRes[0]);
 			a = substr(sum(WRes[1], WRes[1]), WRes[0]);
 		
 			if (Mask[Ind] == 1)
