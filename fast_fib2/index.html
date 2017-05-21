@@ -109,9 +109,9 @@ function init()
 			
 			for (var i = 0; i < 2; i++) if (Ws[i].idle == false) return;
 			
-			T = F ? sum(WRes[1].slice(), [1]) : substr(WRes[1].slice(), [1]);
+			t = F ? sum(WRes[1].slice(), [1]) : substr(WRes[1].slice(), [1]);
 			
-			b = sum(sum(T, WRes[0]), WRes[0]);
+			b = sum(sum(t, WRes[0]), WRes[0]);
 			a = substr(sum(WRes[1], WRes[1]), WRes[0]);
 		
 			if (Mask[Ind] == 1)
