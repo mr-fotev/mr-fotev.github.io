@@ -101,8 +101,8 @@ function karat(a, b)
 	var a0 = a.slice(0, n), a1 = a.slice(n, a.length), b0 = b.slice(0, n), b1 = b.slice(n, b.length);
 
 	// delete leading nulls!!!
-	while (a0[a0.length - 1] == 0) a0.pop();
-	while (b0[b0.length - 1] == 0) b0.pop();
+	while (a0[a0.length - 1] == 0 && a0.length > 1) a0.pop();
+	while (b0[b0.length - 1] == 0 && b0.length > 1) b0.pop();
 	
 	var z0 = karat(a0, b0);
 	var z2 = karat(a1, b1);
