@@ -1,13 +1,13 @@
-### Comparison of sorting algorithms for random positive integers
-Tested on Intel i5-4210U, compiled with Microsoft Visual C++ Compiler
+### Сравнение на сортиращи алгоритми за положителни числа
+Тествано е на Intel i5-4210U, компилирано с Microsoft Visual C++ Compiler
 
 N ~ 1 000 000 - 1 200 000<br>
 Range = 1 000 000<br>
 Attempts = 100<br>
 
-Results in ms:
+Резултати в ms:
 
-| | Average | Min| Max |
+| | Avg | Min| Max |
 | --- | --- | --- | --- |
 | *Quick Sort* | 108.37 | 97 | 136 |
 | *Merge Sort* | 151.87 | 136 | 170 |
