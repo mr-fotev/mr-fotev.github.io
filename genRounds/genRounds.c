@@ -175,5 +175,7 @@ int main()
 		printf("\t(%.3f%% of all pairs)\n", LEVELS[i] * 100.0f / P);
 	}
 
+	printf("\n");
+	
 	return 0;
 }
