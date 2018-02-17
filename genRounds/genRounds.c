@@ -145,6 +145,8 @@ int main()
 
 	srand((unsigned int)time(0));
 
+	printf("A schedule for %d players on %d tables and %d rounds\n\n", Players, Tables, Rounds);
+
 	// принти разпределението за кръговете
 	for (i = 0; i < Rounds; i++) printNextRound(&newGame);
 
