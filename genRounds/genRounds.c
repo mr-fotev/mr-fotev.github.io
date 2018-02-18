@@ -154,16 +154,16 @@ int main()
 	float avgN = 0;
 	int maxLEVEL = 0;
 
-	for (i = 0; i < Players; i++)
+	for (i = 0; i < Players - 1; i++)
 	{
-		for (j = 0; j < Players; j++) if (i != j)
+		for (j = i + 1; j < Players; j++)
 		{
 			LEVELS[STATS[i][j]]++;
 			if (STATS[i][j] > maxLEVEL) maxLEVEL = STATS[i][j];
 		}
 	}
 
-	avgN = (LEVELS[0] * 1.0f) / Players;
+	avgN = (LEVELS[0] * 2.0f) / Players;
 
 	printf("Every player played with average %.3f%% of all other players\n\n", (Players - 1 - avgN) * 100.0f / (Players - 1));
 
@@ -171,8 +171,8 @@ int main()
 	int P = Players * (Players - 1);
 	for (i = 0; i <= maxLEVEL; i++)
 	{
-		printf("%d: %d", i, LEVELS[i] / 2);
-		printf("\t(%.3f%% of all pairs)\n", LEVELS[i] * 100.0f / P);
+		printf("%d: %d", i, LEVELS[i]);
+		printf("\t(%.3f%% of all pairs)\n", LEVELS[i] * 200.0f / P);
 	}
 
 	printf("\n");
