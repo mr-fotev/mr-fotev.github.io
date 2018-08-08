@@ -13,26 +13,26 @@
 	
 ```
 ?- G = [[nS, nY], [a,b], nS, [[nS, [a, nS, b], [nS, nS], [], [nY]], [nY, [a, nY], [b]]]], earley(G, [a,a,a,b,b,b,a,b], T).
-	G = [[nS, nY], [a, b], nS, [[nS, [a, nS, b], [nS, nS], [], [nY]], [nY, [a, nY], [b]]]],
-	T = [nS, [nS, [a], [nS, [a], [nS, [a], [nS, []], [b]], [b]], [b]], [nS, [a], [nS, []], [b]]] ;
+  G = [[nS, nY], [a, b], nS, [[nS, [a, nS, b], [nS, nS], [], [nY]], [nY, [a, nY], [b]]]],
+  T = [nS, [nS, [a], [nS, [a], [nS, [a], [nS, []], [b]], [b]], [b]], [nS, [a], [nS, []], [b]]] ;
 
-	false.
+  false.
+
+  // T is a parse tree of the searched string.
 	
-	// T is a parse tree of the searched string.
+?- G = [[nS, nY], [a,b], nS, [[nS, [a, nS, b], [nS, nS], [], [nY]], [nY, [a, nY], [b]]]], earley(G, [a,b], T).
+  G = [[nS, nY], [a, b], nS, [[nS, [a, nS, b], [nS, nS], [], [nY]], [nY, [a, nY], [b]]]],
+  T = [nS, [a], [nS, []], [b]] ;
+
+  G = [[nS, nY], [a, b], nS, [[nS, [a, nS, b], [nS, nS], [], [nY]], [nY, [a, nY], [b]]]],
+  T = [nS, [nS, []], [nS, [a], [nS, []], [b]]] ;
 	
-	?- G = [[nS, nY], [a,b], nS, [[nS, [a, nS, b], [nS, nS], [], [nY]], [nY, [a, nY], [b]]]], earley(G, [a,b], T).
-	    G = [[nS, nY], [a, b], nS, [[nS, [a, nS, b], [nS, nS], [], [nY]], [nY, [a, nY], [b]]]],
-		T = [nS, [a], [nS, []], [b]] ;
-		
-		G = [[nS, nY], [a, b], nS, [[nS, [a, nS, b], [nS, nS], [], [nY]], [nY, [a, nY], [b]]]],
-		T = [nS, [nS, []], [nS, [a], [nS, []], [b]]] ;
-		
-		G = [[nS, nY], [a, b], nS, [[nS, [a, nS, b], [nS, nS], [], [nY]], [nY, [a, nY], [b]]]],
-		T = [nS, [nY, [a], [nY, [b]]]] ;
-		
-		false.
+  G = [[nS, nY], [a, b], nS, [[nS, [a, nS, b], [nS, nS], [], [nY]], [nY, [a, nY], [b]]]],
+  T = [nS, [nY, [a], [nY, [b]]]] ;
 	
-	// Several possible trees are generated here
+  false.
+
+  // Several possible trees are generated here
 ```
 	
 * If every string in L(G) has finitely many parse trees, you can replace the symbol '_' with 'T' on line 44 to generate all of them.  
