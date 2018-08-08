@@ -1,12 +1,12 @@
 ### Simple Earley parser v1.0
 
-* This program is for demonstration purposes only! It's not recommended to use it for large grammars or strings, although it may run fast on some of them.
+* This program is for demonstration purposes only! It's not recommended to use it for large grammars or strings, although it may run fast on some of them.  
 
 * The program expects correct input.
 
-* Grammars representation:
-    Consider G = ({S, Y}, {a,b}, S, {S -> aSb|SS|e|Y, Y -> aY|b}), where e is the empty string
-    G can be represented by: [[nS, nY], [a,b], nS, [[nS, [a, nS, b], [nS, nS], [], [nY]], [nY, [a, nY], [b]]]]
+* Grammars representation:  
+    Consider G = ({S, Y}, {a,b}, S, {S -> aSb|SS|e|Y, Y -> aY|b}), where e is the empty string.  
+    G can be represented by: [[nS, nY], [a,b], nS, [[nS, [a, nS, b], [nS, nS], [], [nY]], [nY, [a, nY], [b]]]]  
 
 * Example usage:
 	
@@ -32,10 +32,10 @@
 		
 		// Several possible trees are generated here
 		
-* If every string in L(G) has finitely many parse trees, you can replace the symbol '_' with 'T' on line 44 to generate all of them.
+* If every string in L(G) has finitely many parse trees, you can replace the symbol '_' with 'T' on line 44 to generate all of them.  
     This also is not recommended.
 
-* Some test grammars
+* Some test grammars  
 		g1([[nS], [a,b], nS, [[nS, [nS, nS], [a, nS, b], []]]]).
 		g2([[nS], [a,b], nS, [[nS, [a, nS, b], []]]]).
 		g3([[nS], [x, y, z, '+', '-', '*', '/', '(', ')'], nS, [[nS, [x], [y], [z], [nS, '+', nS], [nS, '-', nS], [nS, '*', nS], [nS, '/', nS], ['(', nS, ')']]]]).
