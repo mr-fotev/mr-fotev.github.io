@@ -6,7 +6,7 @@
 
 * Grammars representation:
 
-    Consider ![](/eq1.gif)
+    Consider ![](mr-fotev.github.io/early/eq1.gif)
     ![](http://latex.codecogs.com/gif.latex?G) can be represented by: [[nS, nY], [a,b], nS, [[nS, [a, nS, b], [nS, nS], [], [nY]], [nY, [a, nY], [b]]]]  
 
 * Example usage:
