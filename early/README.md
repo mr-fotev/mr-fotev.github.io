@@ -6,7 +6,7 @@
 
 * Grammars representation:
 
-    Consider ![](http://latex.codecogs.com/gif.latex?G=(\{S,&space;Y\},&space;\{a,&space;b\},&space;S,&space;\{S&space;\rightarrow&space;aSb|SS|Y|\varepsilon,&space;Y&space;\rightarrow&space;aY|b\})).  
+    Consider ![](https://latex.codecogs.com/gif.latex?G=(\{S,&space;Y\},&space;\{a,&space;b\},&space;S,&space;\{S&space;\rightarrow&space;aSb|SS|Y|\varepsilon,&space;Y&space;\rightarrow&space;aY|b\})).  
     ![](http://latex.codecogs.com/gif.latex?G) can be represented by: [[nS, nY], [a,b], nS, [[nS, [a, nS, b], [nS, nS], [], [nY]], [nY, [a, nY], [b]]]]  
 
 * Example usage:
@@ -35,7 +35,7 @@
   // Several possible trees are generated here
 ```
 	
-* If every string in ![](http://latex.codecogs.com/gif.latex?\mathcal{L}=G) has finitely many parse trees, you can replace the symbol '_' with 'T' on line 4 to generate all of them.  
+* If every string in ![](http://latex.codecogs.com/gif.latex?\mathcal{L}(G)) has finitely many parse trees, you can replace the symbol '_' with 'T' on line 4 to generate all of them.  
 
     This also is not recommended.
 
