@@ -1,11 +1,11 @@
 % Additional predicates
 
-pushNulls(S, [X,T], Res):- (member([X,_], S) -> Res = S; append(S, [[X,T]], Res)).
+addNulls(S, [X,T], Res):- (member([X,_], S) -> Res = S; append(S, [[X,T]], Res)).
 
-pushSet(S, [X,A,B,I,T], Res):- (member([X,A,B,I,_], S) -> Res = S; append(S, [[X,A,B,I,T]], Res)).
+addSet(S, [X,A,B,I,T], Res):- (member([X,A,B,I,_], S) -> Res = S; append(S, [[X,A,B,I,T]], Res)).
 
-bulkPushSet(S, [], S).
-bulkPushSet(S, [A|As], Res):- pushSet(S, A, NewS), bulkPushSet(NewS, As, Res).
+bulkAddSet(S, [], S).
+bulkAddSet(S, [A|As], Res):- addSet(S, A, NewS), bulkAddSet(NewS, As, Res).
 
 mesh(L, M, Res):- findall(T, (member(A, L), member(B, M), append(A, [B], T)), Res).
 
@@ -22,8 +22,8 @@ complete([Y,_,[],_,Ty], [X,A,[Y|B],I,Tx], [X,AY,B,I,NewTx]):- append(A, [Y], AY)
 
 e(_, Nulls, _, _, _, [], Curr, Next, [Curr, Next, Nulls]).
 
-e([N,E,S,R], Nulls, [C|Cs], L, K, [[X,A,[C|B],I,T]|Xs], Curr, Next, Res):- scan([X,A,[C|B],I,T], NewNode), pushSet(Next, NewNode, NewNext),
-	e([N,E,S,R], Nulls, [C|Cs], L, K, Xs, Curr, NewNext, Res).
+e([N,E,S,R], Nulls, [C|Cs], L, K, [[X,A,[C|B],I,T]|Xs], Curr, Next, Res):- scan([X,A,[C|B],I,T], NewNode),
+	addSet(Next, NewNode, NewNext), e([N,E,S,R], Nulls, [C|Cs], L, K, Xs, Curr, NewNext, Res).
 
 e([N,E,S,R], Nulls, [C|Cs], L, K, [[_,_,[D|_],_,_]|Xs], Curr, Next, Res):- member(D, E), D \= C,
 	e([N,E,S,R], Nulls, [C|Cs], L, K, Xs, Curr, Next, Res).
@@ -33,17 +33,17 @@ e([N,E,S,R], Nulls, [], L, K, [[_,_,[C|_],_,_]|Xs], Curr, Next, Res):- member(C,
 
 e([N,E,S,R], Nulls, Cs, L, K, [[X,A,[Y|B],I,T]|_], Curr, Next, Res):- member(Y, N), member([Y|Ys], R), Node = [X,A,[Y|B],I,T],
 	findall(NewNode, predict(Nulls, Ys, Node, K, NewNode), NewNodes),
-	bulkPushSet(Curr, NewNodes, NewCurr), append(_, [Node|NewXs], NewCurr),
+	bulkAddSet(Curr, NewNodes, NewCurr), append(_, [Node|NewXs], NewCurr),
 	e([N,E,S,R], Nulls, Cs, L, K, NewXs, NewCurr, Next, Res).
 	
 e([N,E,S,R], Nulls, Cs, L, K, [[X,A,[],K,T]|_], Curr, Next, Res):- Node = [X,A,[],K,T],
 	findall(NewNode, (member(TempNode, Curr), complete(Node, TempNode, NewNode)), NewNodes),
-	bulkPushSet(Curr, NewNodes, NewCurr), append(_, [Node|NewXs], NewCurr),
-	pushNulls(Nulls, [X,T], NewNulls), e([N,E,S,R], NewNulls, Cs, L, K, NewXs, NewCurr, Next, Res).	
+	bulkAddSet(Curr, NewNodes, NewCurr), append(_, [Node|NewXs], NewCurr),
+	addNulls(Nulls, [X,T], NewNulls), e([N,E,S,R], NewNulls, Cs, L, K, NewXs, NewCurr, Next, Res).	
 
 e([N,E,S,R], Nulls, Cs, L, K, [[X,A,[],I,T]|_], Curr, Next, Res):- nth0(I, L, LI), Node = [X,A,[],I,T],
 	findall(NewNode, (member(TempNode, LI), complete(Node, TempNode, NewNode)), NewNodes),
-	bulkPushSet(Curr, NewNodes, NewCurr), append(_, [Node|NewXs], NewCurr),
+	bulkAddSet(Curr, NewNodes, NewCurr), append(_, [Node|NewXs], NewCurr),
 	e([N,E,S,R], Nulls, Cs, L, K, NewXs, NewCurr, Next, Res).
 
 % Main predicate
