@@ -35,9 +35,7 @@
   // Several possible trees are generated here
 ```
 	
-* If every string in L(G) has finitely many parse trees, you can replace the symbol '_' with 'T' on line 4 to generate all of them.  
-
-    This also is not recommended.
+* The parser can not generate all parse trees
 
 * Some test grammars  
 
