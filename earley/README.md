@@ -1,6 +1,6 @@
-### Simple Earley parser in Prolog (v0.9)
+### Simple Earley parser in Prolog (v1.1)
 
-* This program is for demonstration purposes only! It's not recommended to use it for large grammars or strings, although it may run fast on some of them.  
+* This is an inefficient program for demonstration purposes only! It's not recommended to use it for large grammars or strings, although it may run fast on some of them.
 
 * The program expects correct input.
 
