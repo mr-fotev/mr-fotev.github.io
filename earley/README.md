@@ -43,5 +43,5 @@
 g1([[nS], [a,b], nS, [[nS, [nS, nS], [a, nS, b], []]]]).
 g2([[nS], [a,b], nS, [[nS, [a, nS, b], []]]]).
 g3([[nS], [x, y, z, '+', '-', '*', '/', '(', ')'], nS, [[nS, [x], [y], [z], [nS, '+', nS], [nS, '-', nS], [nS, '*', nS], [nS, '/', nS], ['(', nS, ')']]]]).
-even_even([[nX, nY, nS], [a, b], nS, [[nS, [nS, nS], [nX, nS], [], [nY, nS, nY]], [nX, [a, a], [b, b]], [nY, [a, b], [b, a]]]])
+even_even([[nX, nY, nS], [a, b], nS, [[nS, [nS, nS], [nX, nS], [], [nY, nS, nY]], [nX, [a, a], [b, b]], [nY, [a, b], [b, a]]]]).
 ```
