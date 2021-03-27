@@ -14,7 +14,7 @@ global _start
 
 _start:
 	; Read 10 bytes from STDIN in sIn
-	mov	edx, 10
+	mov edx, 10
 	mov ecx, sIn
 	mov ebx, 0
 	mov eax, 3
