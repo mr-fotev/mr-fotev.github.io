@@ -6,22 +6,21 @@
 ;
 
 SECTION .bss
-	sIn: resb 255
-	sOut: resb 255
+	s: resb 255
 
 SECTION .text
 global _start
 
 _start:
-	; Read 10 bytes from STDIN in sIn
+	; Read 10 bytes from STDIN in s
 	mov edx, 10
-	mov ecx, sIn
+	mov ecx, s
 	mov ebx, 0
 	mov eax, 3
 	int 80h
 	
 	; Transform input to int and store in eax
-	mov esi, sIn
+	mov esi, s
 	mov eax, 0
 	mov edx, 0
 getInDigits:
@@ -30,7 +29,6 @@ getInDigits:
 	jl getInDigits_end
 	cmp dl, 57
 	jg getInDigits_end
-	
 	sub dl, 48
 	imul eax, 10
 	add eax, edx
@@ -51,33 +49,31 @@ getInDigits_end:
 	add eax, eax
 	or eax, 1
 	
-	; Store digits of result in sIn in reverse order 
-	mov esi, sIn
-	mov ecx, 0 ; stores the number of digits
-	mov ebx, 10
-getOutDigitsReverse:
-	mov edx, 0
-	idiv ebx
-	add dl, 48
-	mov [esi+ecx], dl
+	; Count number of digits in result [Can be improved with LUT]
+	mov ecx, 0
+	mov ebx, 1
+countDigits:
 	inc ecx
-	cmp eax, 0
-	jg getOutDigitsReverse
+	imul ebx, 10
+	cmp eax, ebx
+	jge countDigits
 	
-	; Store digits of result in sOut
-	mov edi, sOut
+	; Store digits of result in s
+	mov esi, s
+	mov edi, 10
 	mov ebx, ecx
 getOutDigits:
+	mov edx, 0
+	idiv edi
+	add dl, 48
 	dec ebx
-	mov edx, [esi+ebx]
-	mov [edi], dl
-	inc edi
-	cmp ebx, 0
+	mov [esi+ebx], dl
+	cmp eax, 0
 	jg getOutDigits
 	
-	; Print sOut to STDOUT
+	; Print s to STDOUT
 	mov edx, ecx
-	mov ecx, sOut
+	mov ecx, s
 	mov ebx, 1
 	mov eax, 4
 	int 80h
