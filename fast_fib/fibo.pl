@@ -1,5 +1,5 @@
 /*
-Large Finonacci numbers (N ~ 1 000 000 000)
+Large Fibonacci numbers (N ~ 1 000 000 000)
 
 Example usage (Time is measured in seconds):
 
