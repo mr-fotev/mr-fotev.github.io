@@ -1,4 +1,4 @@
-// #NoGolf 1
+// #NoGolf1
 
 #include <stdio.h>
 
@@ -21,13 +21,13 @@ int main(){
 	else if (!sideBC) printf("BC");
 	else if (!sideCA) printf("AC");
 	else if (((sideAB < 0) && (sideBC < 0) && (sideCA < 0)) ||
-			 ((sideAB > 0) && (sideBC > 0) && (sideCA > 0))) printf("ABC");
+		 ((sideAB > 0) && (sideBC > 0) && (sideCA > 0))) printf("ABC");
 	else printf("-ABC");
 	
 	return 0;
 }
 
-// #NoGolf 2
+// #NoGolf2
 
 #include<stdio.h>
 
