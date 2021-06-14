@@ -3,7 +3,7 @@
 #include <stdio.h>
 
 int a[8];
-int c(int pa, int pb){ return a[2*pa]*a[2*pb+1] - a[2*pb]*a[2*pa+1]; }
+int c(int pa, int pb){ return a[2*pa]*a[2*pb+1]-a[2*pb]*a[2*pa+1]; }
 int det(int pa, int pb, int pc){ return c(pa,pb)+c(pb,pc)+c(pc,pa); }
 
 int main(){
