@@ -26,13 +26,13 @@ int det(int pa, int pb, int pc){ return c(pa,pb)+c(pb,pc)+c(pc,pa); }
 
 int main(){
 	int i;	
-	for (i=0; i<8; i++) scanf("%d", a+i);
+	for (i=0; i<8; i++) scanf("%d",a+i);
 
 	int sideAB = det(3,0,1);
 	int sideBC = det(3,1,2);
 	int sideCA = det(3,2,0);
 	
-	int bInside = ((sideAB <= 0) && (sideBC <= 0) && (sideCA <= 0)) || ((sideAB >= 0) && (sideBC >= 0) && (sideCA >= 0));
+	int bInside = ((sideAB<=0) && (sideBC<=0) && (sideCA<=0)) || ((sideAB>=0) && (sideBC>=0) && (sideCA>=0));
 	
 	if (!sideAB && !sideCA) printf("A");
 	else if (!sideAB && !sideBC) printf("B");
