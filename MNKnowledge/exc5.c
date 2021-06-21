@@ -32,8 +32,13 @@
 
 #include <stdio.h>
 
+int n;
+
+int page(int x){
+	return (x > n || x < -n) ? 0:-x;
+}
+
 int main(){
-	int n;
 	scanf("%d", &n);
 	
 	int p = n / 8;
@@ -44,19 +49,19 @@ int main(){
 	
 	int i;
 	for (i = 0; i < p; i++){
-		printf("%d %d %d %d ", h+2*i+1 > n ? 0:-h-2*i-1	// top left front
-			, h-2*i > n ? 0:-h+2*i	// top right front
-			, m-2*i > n ? 0:m-2*i	// bottom left front
+		printf("%d %d %d %d ", page(h+2*i+1)	// top left front
+			, page(h-2*i)	// top right front
+			, page(-m+2*i)	// bottom left front
 			, 2*i+1);	// bottom right front
 	}
 	
 	printf("\n");
 	
 	for (i = p-1; i >= 0; i--){
-		printf("%d %d %d %d ", h-2*i-1>n? 0:-h+2*i+1	// top left back
-			, h+2*i+2 > n ? 0:-h-2*i-2	// top right back
-			, 2*i+2	// bottom left back
-			, m-2*i-1 > n ? 0:m-2*i-1);	// bottom right back
+		printf("%d %d %d %d ", page(h-2*i-1)	// top left back
+			, page(h+2*i+2)	// top right back
+			, page(-2*i-2)	// bottom left back
+			, page(-m+2*i+1));	// bottom right back
 	}
 	
 	return 0;
@@ -66,4 +71,4 @@ int main(){
 
 n;t(x){return x>n||x<-n?0:-x;}main(i,p,m,h){scanf("%d",&n);p=n/8+!!(n%8);m=p*8;h=p*4;
 for(i=0;i<p;i++)printf("%d %d %d %d ",t(h+2*i+1),t(h-2*i),t(-m+2*i),2*i+1);printf("\n");
-for(i=p-1;i>=0;i--)printf("%d %d %d %d ",t(h-2*i-1),t(h+2*i+2),2*i+2,t(-m+2*i+1));}
+for(i=p-1;i>=0;i--)printf("%d %d %d %d ",t(h-2*i-1),t(h+2*i+2),t(-2*i-2),t(-m+2*i+1));}
