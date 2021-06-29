@@ -93,75 +93,74 @@ int main(){
 #include <iostream>
 #include <ctime>
 #include <unordered_map>
-#include <string>
-#include <queue>
 #include <vector>
+#define N 524288
 
 using namespace std;
 
-unordered_map<string, string> P;
+unordered_map<long long, long long> P;
+vector<long long> Q;
+int iHead = 0;
 
-struct State{
-	int l, m, r;
-	State(int a, int b, int c){ l = a; m = b; r = c; }
-	string str(){ return to_string(l) + "-" + to_string(m) + "-" + to_string(r); }
-};
+long long sq;
 
-queue<State> Q;
-string sq;
-
-void place_next(int a, int b, int c){
-	State n(a, b, c);
-	string sn = n.str();
-
-	if (P.find(sn) == P.end()){
-		Q.push(n);
-		P[sn] = sq;
+void place_next(long long a, long long b){
+	long long x = N*a+b;
+	
+	if (P.find(x) == P.end()){
+		Q.push_back(x);
+		P[x] = sq;
 	}
 }
 
 int main(){
-	int a, b, c;
+	long long a, b, c;
 
 	cin >> a >> b >> c;
 	
 	clock_t start = clock();
 	
-	State s(a, b, c);
-
-	Q.push(s);
-	P[s.str()] = "";
-
-	sq = "";
+	long long sum = a + b + c;
+	
+	Q.push_back(N*a+b);
+	P[N*a+b] = -1;
 
 	while (true){
-		State q = Q.front();
-		sq = q.str();
-
-		Q.pop();
-
-		if (q.l * q.m * q.r == 0) break;
+		sq = Q[iHead];
+		iHead++;
 		
-		if (q.l >= q.m) place_next(q.l - q.m, 2 * q.m, q.r);
-		if (q.l >= q.r) place_next(q.l - q.r, q.m, 2 * q.r);
-		if (q.m >= q.l) place_next(2 * q.l, q.m - q.l, q.r);
-		if (q.m >= q.r) place_next(q.l, q.m - q.r, 2 * q.r);
-		if (q.r >= q.l) place_next(2 * q.l, q.m, q.r - q.l);
-		if (q.r >= q.m) place_next(q.l, 2 * q.m, q.r - q.m);
+		a = sq / N;
+		b = sq % N;
+		c = sum - a - b;
+
+		if (a == 0 || b == 0 || c == 0) break;
+		
+		if (a >= b) place_next(a-b, 2*b);
+		if (a >= c) place_next(a-c, b);
+		if (b >= a) place_next(2*a, b-a);
+		if (b >= c) place_next(a, b-c);
+		if (c >= a) place_next(2*a, b);
+		if (c >= b) place_next(a, 2*b);
 	}
 	
-	vector<string> path;
+	vector<long long> path;
 
-	while (sq != ""){
+	while (sq != -1){
 		path.push_back(sq);
 		sq = P[sq];
 	}
 
-	for (int i = path.size() - 1; i >= 0; i--) cout << path[i] << endl;
+	for (int i = path.size() - 1; i >= 0; i--){
+		a = path[i] / N;
+		b = path[i] % N;
+		c = sum - a - b;
+		
+		cout << a << "-" << b << "-" << c << endl;
+	}
 
 	clock_t end = clock();
 
 	cout << endl << (double)(end - start) / CLOCKS_PER_SEC;
-
+	
 	return 0;
 }
