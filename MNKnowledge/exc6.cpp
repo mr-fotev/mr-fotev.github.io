@@ -92,25 +92,43 @@ int main(){
 
 #include <iostream>
 #include <ctime>
-#include <unordered_map>
 #include <vector>
 #define N 524288
+#define MOD 100019
 
 using namespace std;
 
-unordered_map<long long, long long> P;
-vector<long long> Q;
-int iHead = 0;
+vector <long long> vKeys[MOD];
+vector <long long> vVals[MOD];
+
+long long get(long long key){
+	long long h = key % MOD;
+	
+	for (int i = 0; i < vKeys[h].size(); i++){
+		if (vKeys[h][i] == key){
+			return vVals[h][i];
+		}
+	}
+	
+	return -1;
+}
+
+void set(long long key, long long val){
+	long long h = key % MOD;
+	vKeys[h].push_back(key);
+	vVals[h].push_back(val);
+}
+
+vector <long long> vParents;
+vector <long long> vNodes;
+int iFront = 0;
 
 long long sq;
+long long p;
 
 void place_next(long long a, long long b){
-	long long x = N*a+b;
-	
-	if (P.find(x) == P.end()){
-		Q.push_back(x);
-		P[x] = sq;
-	}
+	vParents.push_back(sq);
+	vNodes.push_back(N*a+b);
 }
 
 int main(){
@@ -122,18 +140,25 @@ int main(){
 	
 	long long sum = a + b + c;
 	
-	Q.push_back(N*a+b);
-	P[N*a+b] = -1;
-
+	vParents.push_back(-2);
+	vNodes.push_back(N*a+b);
+	
 	while (true){
-		sq = Q[iHead];
-		iHead++;
+		p = vParents[iFront];
+		sq = vNodes[iFront];
+		
+		iFront++;
+		
+		if (get(sq) != -1) continue;
 		
 		a = sq / N;
 		b = sq % N;
 		c = sum - a - b;
 
-		if (a == 0 || b == 0 || c == 0) break;
+		if (a == 0 || b == 0 || c == 0){
+			set(sq, p);
+			break;
+		}
 		
 		if (a >= b) place_next(a-b, 2*b);
 		if (a >= c) place_next(a-c, b);
@@ -141,18 +166,21 @@ int main(){
 		if (b >= c) place_next(a, b-c);
 		if (c >= a) place_next(2*a, b);
 		if (c >= b) place_next(a, 2*b);
+		
+		set(sq, p);
 	}
 	
-	vector<long long> path;
-
-	while (sq != -1){
-		path.push_back(sq);
-		sq = P[sq];
+	iFront = 0;
+	
+	while (sq != -2){
+		vNodes[iFront] = sq;
+		iFront++;
+		sq = get(sq);
 	}
 
-	for (int i = path.size() - 1; i >= 0; i--){
-		a = path[i] / N;
-		b = path[i] % N;
+	for (int i = iFront-1; i >= 0; i--){
+		a = vNodes[i] / N;
+		b = vNodes[i] % N;
 		c = sum - a - b;
 		
 		cout << a << "-" << b << "-" << c << endl;
@@ -161,6 +189,7 @@ int main(){
 	clock_t end = clock();
 
 	cout << endl << (double)(end - start) / CLOCKS_PER_SEC;
-	
+
 	return 0;
 }
+
