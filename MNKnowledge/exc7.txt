@@ -1,12 +1,12 @@
-func singleElement(Array of int a, int c):
-	Let s := Array of (c+1) zeroes
+func singleElement(Array of int a, int m):
+	Let s := Array of (m+1) zeroes
 	
 	for each int i in a:
-		s[c] := 0
+		s[m] := 0
 		Let p := 0
 		Let q := 0
 		
-		for k from c down to 1:
+		for k from m down to 1:
 			s[k] := s[k] XOR p
 			p := s[k-1] AND i
 			s[k] := s[k] OR p
@@ -14,6 +14,7 @@ func singleElement(Array of int a, int c):
 		
 		s[0] = s[0] XOR p
 		s[0] = s[0] OR (NOT(q) AND i)
-		s[0] = s[0] XOR s[c]
+		s[0] = s[0] XOR s[m]
 		
 	return s[0]
+	
