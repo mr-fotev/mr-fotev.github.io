@@ -3,7 +3,20 @@
 <title>Colored Blocks</title>
 <link rel="icon" href="icon.ico">
 <script>
+function toggle(){
+    var e = document.getElementById("cvs")
+    e.style.display = (e.style.display == "none" ? "block":"none")
+    
+    e = document.getElementById("txt")
+    e.style.display = (e.style.display == "none" ? "block":"none")
+    
+    e = document.getElementById("toggle")
+    e.innerHTML = (e.innerHTML == "Switch to text version" ? "Switch to graphical version":"Switch to text version")
+}
+
 window.onload = function(){
+    var tStart = Date.now()
+    
     var ctx = document.getElementById("cvs").getContext("2d")
     
     ctx.canvas.width = window.innerWidth - 100
@@ -20,8 +33,11 @@ window.onload = function(){
         t[i] = new Array(2*i+1)
     }
     
-    var x = [0,2,1,2,1,5,3,2,3,7,4,5,4,9,6,5,6,7,6,11,8,7,8,13,10,9,10,11,12,11,12,13,9,13,10,12]
-
+    var p = [0,2,1,2,1,5,3,2,3,7,4,5,4,9,6,5,6,7,6,11,8,7,8,13,10,9,10,11,12,11,12,13,9,13,10,12]
+    
+    var aLCH = [25,27,29,31,33,35,26,28,30,32,34,16,18,20,22,24,17,19,21,23,9,11,13,15,10,12,14,4,6,8,5,7,1,3,2,0]
+    var sLCH = ""
+    
     var a = new Array(12)
     
     function genTable(b, l, r){
@@ -31,6 +47,9 @@ window.onload = function(){
         t[4][2]=(b[6]+l)%3;      t[4][3]=b[12];           t[4][4]=b[11];           t[4][5]=b[10];            t[4][6]=(b[6]+r)%3;       t[4][7]=(b[5]+r)%3;
         t[4][8]=(b[1]+r)%3;      t[5][0]=(b[0]+l)%3;      t[5][1]=(b[2]+l)%3;      t[5][2]=(b[1]+l)%3;       t[5][3]=(b[5]+l)%3;       t[5][4]=(b[4]+l)%3;
         t[5][5]=3-b[9]-b[13];    t[5][6]=(b[8]+r)%3;      t[5][7]=(b[7]+r)%3;      t[5][8]=(b[3]+r)%3;       t[5][9]=(b[2]+r)%3;       t[5][10]=(b[0]+r)%3;
+        
+        var s = t.map(x => x.join("")).join("")
+        sLCH += aLCH.map(x => s[x]).join("") + "<br>"
     }
     
     function drawTriangle(x, y, dir, a, clr){
@@ -77,13 +96,13 @@ window.onload = function(){
         b.unshift(0)
         
         var k
-        for (k = 0; k < x.length; k += 2){
-            if (b[x[k]] == b[x[k+1]]){
+        for (k = 0; k < p.length; k += 2){
+            if (b[p[k]] == b[p[k+1]]){
                 break
             }
         }
         
-        if (k == x.length){
+        if (k == p.length){
             if ((b[9]!=(b[8]+1)%3) && (b[13]!=(b[4]+2)%3) && (b[1]!=(b[3]+1)%3) && (b[4]!=(b[8]+1)%3) && (b[9]+b[10]!=b[12]+b[13])){
                 genTable(b, 1, 2)
                 drawBlock(s)
@@ -96,16 +115,22 @@ window.onload = function(){
             }
         }
     }
+    
+    document.getElementById("txt").innerHTML = sLCH
+    document.getElementById("time").innerHTML = Date.now() - tStart
 }
 </script>
 </head>
 <body>
 <p style="margin: 10px 40px;">
-&nbsp;&nbsp;&nbsp;A catalogue with 136 blocks for <a target="_blank" href="https://drive.google.com/file/d/1SyJcSo7hc6KP8YA57icx7Y7vfT3Y__Q5/view">this</a> problem.<br><br>
+&nbsp;&nbsp;&nbsp;A catalogue (generated in <span id="time"></span> ms) with 136 blocks for
+<a target="_blank" href="https://drive.google.com/file/d/1SyJcSo7hc6KP8YA57icx7Y7vfT3Y__Q5/view">this</a> problem.<br><br>
 Each block consists of 36 (12 yellow, 12 red and 12 green) triangular tiles and satisfies the following properties:<br>
 • The Euclidean plane can be covered with infinite instances of the same block in such way that no two adjecent tiles share the same color.<br>
-• Rotating the block 120° to the left or right results in a block with the same color pattern, but rearranged colors.<br>
+• Rotating the block 120° to the left or right results in a block with the same color pattern but rearranged colors.<br>
 </p>
+<button id="toggle" style="margin: 5px 40px;" onclick="toggle()">Switch to text version</button>
 <canvas id="cvs"></canvas>
+<p id="txt" style="margin: 10px 40px; display: none;"></p>
 </body>
 </html>
