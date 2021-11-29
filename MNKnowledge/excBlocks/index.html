@@ -23,7 +23,7 @@ window.onload = function(){
     
     var sqSize = ctx.canvas.width/8, tSize = sqSize/8
     
-    ctx.canvas.height = 17*sqSize
+    ctx.canvas.height = 34*sqSize
     
     var aColors = ["rgb(255,255,0)", "rgb(237,28,36)", "rgb(0,255,0)"]
     
@@ -47,9 +47,6 @@ window.onload = function(){
         t[4][2]=(b[6]+l)%3;      t[4][3]=b[12];           t[4][4]=b[11];           t[4][5]=b[10];            t[4][6]=(b[6]+r)%3;       t[4][7]=(b[5]+r)%3;
         t[4][8]=(b[1]+r)%3;      t[5][0]=(b[0]+l)%3;      t[5][1]=(b[2]+l)%3;      t[5][2]=(b[1]+l)%3;       t[5][3]=(b[5]+l)%3;       t[5][4]=(b[4]+l)%3;
         t[5][5]=3-b[9]-b[13];    t[5][6]=(b[8]+r)%3;      t[5][7]=(b[7]+r)%3;      t[5][8]=(b[3]+r)%3;       t[5][9]=(b[2]+r)%3;       t[5][10]=(b[0]+r)%3;
-        
-        var s = t.map(x => x.join("")).join("")
-        sLCH += aLCH.map(x => s[x]).join("") + "<br>"
     }
     
     function drawTriangle(x, y, dir, a, clr){
@@ -70,6 +67,9 @@ window.onload = function(){
     }
     
     function drawBlock(s){
+        var u = t.map(x => x.join("")).join("")
+        sLCH += aLCH.map(x => u[x]).join("") + "<br>"
+        
         var oX = sqSize*(s%8)+tSize, oY = sqSize*Math.floor(s/8)+sqSize-2*tSize
         
         drawTriangle(oX, oY, -1, 6*tSize, "black")
@@ -107,9 +107,17 @@ window.onload = function(){
                 genTable(b, 1, 2)
                 drawBlock(s)
                 s++
+                
+                t = t.map(y=>y.map(x=>x*(3.5-1.5*x)))
+                drawBlock(s)
+                s++
             }
             if ((b[9]!=(b[8]+2)%3) && (b[13]!=(b[4]+1)%3) && (b[1]!=(b[3]+2)%3) && (b[4]!=(b[8]+2)%3) && (b[9]+b[10]!=b[12]+b[13])){
                 genTable(b, 2, 1)
+                drawBlock(s)
+                s++
+                
+                t = t.map(y=>y.map(x=>x*(3.5-1.5*x)))
                 drawBlock(s)
                 s++
             }
@@ -123,7 +131,7 @@ window.onload = function(){
 </head>
 <body>
 <p style="margin: 10px 40px;">
-&nbsp;&nbsp;&nbsp;A catalogue (generated in <span id="time"></span> ms) with 136 blocks for
+&nbsp;&nbsp;&nbsp;A catalogue (generated in <span id="time"></span> ms) with 272 blocks for
 <a target="_blank" href="https://drive.google.com/file/d/1SyJcSo7hc6KP8YA57icx7Y7vfT3Y__Q5/view">this</a> problem.<br><br>
 Each block consists of 36 (12 yellow, 12 red and 12 green) triangular tiles and satisfies the following properties:<br>
 • The Euclidean plane can be covered with infinite instances of the same block in such way that no two adjecent tiles share the same color.<br>
