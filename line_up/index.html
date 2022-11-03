@@ -1,0 +1,167 @@
+<html>
+<script>
+function set(e){
+    var val = e.innerHTML
+    
+    var eSrc = document.getElementById("src")
+    var sSrc = eSrc.value
+    
+    if (val == "C"){
+        if (sSrc.length > 0){
+            sSrc = sSrc.substring(0, sSrc.length-1)
+        }
+    }
+    else{
+        sSrc = sSrc + val
+    }
+    
+    eSrc.value = sSrc
+}
+
+function next(sCard){
+    if (sCard == "_") return "_"
+    
+    var val = (sCard[0] == 'A' ? 1:parseInt(sCard[0]))
+    
+    return (val == 5 ? "_":(1+val) + sCard[1])
+}
+
+function move(sState, aState, iPos, sCard, P, Q){
+    var aNewState = aState.slice()
+    aNewState[iPos] = sCard + "p"
+    
+    var sNewState = aNewState.join(',').replaceAll(sCard, "_").replace("_p", sCard)
+    
+    if (!(sNewState in P)){
+        P[sNewState] = sState
+        Q.push(sNewState)
+    }
+}
+
+function proceed(){
+    var sState = document.getElementById("src").value
+    
+    var aState = sState.split(',')
+    
+    if (aState.length != 24){
+        document.getElementById("res").innerHTML = "Invalid"
+        return
+    }
+    
+    aState.sort()
+    
+    var aTarget = ["2♠", "2♣", "2♥", "2♦", "3♠", "3♣", "3♥", "3♦", "4♠", "4♣", "4♥", "4♦", "5♠", "5♣", "5♥", "5♦", "A♠", "A♣", "A♥", "A♦", "_", "_", "_", "_"]
+    
+    for (let i = 0; i < 24; i++){
+        if (aTarget[i] != aState[i]){
+            document.getElementById("res").innerHTML = "Invalid"
+            return
+        }
+    }
+    
+    var P = {}
+    
+    var Q = [sState]
+    var iFront = 0
+    
+    P[sState] = ""
+    
+    var isEnd = false
+    
+    while (!isEnd && iFront < Q.length){
+        sState = Q[iFront]
+        iFront++
+        
+        aState = sState.split(',')
+    
+        isEnd = true
+        
+        for (let i = 0; i < 4 && isEnd; i++){
+            for (let j = 0; j < 5; j++){
+                if (next(aState[6*i+j]) != aState[6*i+j+1]){
+                    isEnd = false
+                    break
+                }
+            }
+        }
+        
+        if (!isEnd){
+            for (let i = 0; i < 4; i++){
+                for (let j = 0; j < 6; j++){
+                    if (aState[6*i+j] == "_"){
+                        if (j == 0){
+                            move(sState, aState, 6*i+j, "A♠", P, Q)
+                            move(sState, aState, 6*i+j, "A♥", P, Q)
+                            move(sState, aState, 6*i+j, "A♦", P, Q)
+                            move(sState, aState, 6*i+j, "A♣", P, Q)
+                        }
+                        else if (next(aState[6*i+j-1]) != "_"){
+                            move(sState, aState, 6*i+j, next(aState[6*i+j-1]), P, Q)
+                        }
+                    }
+                }
+            }
+        }
+    }
+    
+    if (isEnd){
+        var aRes = []
+        
+        while (P[sState] != ""){
+            var aOldState = P[sState].split(','), aNewState = sState.split(',')
+            
+            var sText = ""
+            var bFound = false
+            
+            for (let i = 0; i < 4 && !bFound; i++){
+                for (let j = 0; j < 6 && !bFound; j++){
+                    if (aOldState[6*i+j] != aNewState[6*i+j] && aNewState[6*i+j] != "_"){
+                        var sCol = aNewState[6*i+j][1]
+                        sText =  aNewState[6*i+j][0] + (sCol == '♥' || sCol == '♦' ? "<span style=\"color:red;\">"+ sCol + "</span>":sCol)
+                        sText += (aNewState[6*i+j][0] == 'A' ? " to " + (1+i):"")
+                        bFound = true
+                    }
+                }
+            }
+    
+            aRes.push(sText)
+            sState = P[sState]
+        }
+        
+        aRes.reverse()
+        
+        document.getElementById("res").innerHTML = aRes.join(", ")
+    }
+    else{
+        document.getElementById("res").innerHTML = "NO!"
+    }
+}
+</script>
+<style>
+.card{
+    font-size: 18px;
+    margin-right: 10px;
+    margin-bottom: 10px;
+}
+</style>
+<body>
+<div style="width: 620px; margin: 20px auto;">
+<button onclick="set(this)" style="margin-left:70px;" class="card">A</button>
+<button onclick="set(this)" class="card">2</button>
+<button onclick="set(this)" class="card">3</button>
+<button onclick="set(this)" class="card">4</button>
+<button onclick="set(this)" class="card">5</button>
+<button onclick="set(this)" class="card">_</button>
+<button onclick="set(this)" class="card">♠</button>
+<button onclick="set(this)" class="card" style="color:red;">♥</button>
+<button onclick="set(this)" class="card" style="color:red;">♦</button>
+<button onclick="set(this)" class="card">♣</button>
+<button onclick="set(this)" class="card">,</button>
+<button onclick="set(this)" class="card">C</button>
+<br>
+<input id="src" style="margin-right:10px; font-size:16px; margin-bottom:10px; width:550px;">
+<button onclick="proceed()">Solve</button>
+<div id="res" style="width:614px; height:180px; border:1px solid; font-size:20px;"></div>
+</div>
+</body>
+</html>
